@@ -1,11 +1,14 @@
 const bcrypt = require('bcrypt')
 const createError = require('http-errors')
 
+const { User, Company, GasStation, Supply } = require('../models')
+
+const { SUPPLY_STATUS } = require('../supplies/supply-status')
+
+const { formatDate } = require('../../helpers/date')
 const { generateJWTToken } = require('../../helpers/token')
 
-const { User, Company } = require('../models')
-
-const { BUDGET_TYPE } = require('./budget_type')
+const { BALANCE_TYPE } = require('./balance_type')
 
 module.exports = {
   login: async (req, res, next) => {
@@ -52,7 +55,7 @@ module.exports = {
     return userCreated
   },
 
-  getBudget: async (req, res) => {
+  getBalance: async (req, res) => {
     const userId = req.params.userId
 
     const user = await User.findOne({
@@ -60,13 +63,40 @@ module.exports = {
       include: [Company]
     })
 
-    let budget = 0
-    if (user.tipoSaldo === BUDGET_TYPE.PERSONAL) {
-      budget = user.saldo
-    } else if (user.tipoConta === BUDGET_TYPE.SHARED) {
-      budget = user.company.saldo
+    let balance = 0
+    if (user.tipoSaldo === BALANCE_TYPE.SHARED) {
+      balance = user.company.saldo
+    } else {
+      balance = user.saldo
     }
 
-    return res.send({ saldo: budget })
+    return res.send({ saldo: balance })
+  },
+
+  getSupplyHistory: async (req, res) => {
+    const { userId } = req.params
+
+    const concludedSupplies = await Supply.findAll({
+      where: {
+        userId,
+        status: SUPPLY_STATUS.CONCLUDED
+      },
+      include: [GasStation]
+    })
+
+    const history = concludedSupplies.map(({ gasStation, combustivel, totalLitros, totalCreditos, concludedDate, valor }) => {
+      return {
+        nome: gasStation.nome,
+        bandeira: gasStation.bandeira,
+        logradouro: gasStation.logradouro,
+        data: formatDate(concludedDate),
+        combustivel,
+        totalLitros,
+        valorAbastecimento: valor,
+        valorEmCreditos: totalCreditos
+      }
+    })
+
+    res.send(history)
   }
 }

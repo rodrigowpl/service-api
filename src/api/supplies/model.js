@@ -1,9 +1,10 @@
 const { DataTypes } = require('sequelize')
 
 const { FUEL_TYPE } = require('./fuel_type')
+const { SUPPLY_STATUS } = require('./supply-status')
 
 module.exports = sequelize => (
-  sequelize.define('ticket', {
+  sequelize.define('supply', {
     id: {
       type: DataTypes.STRING,
       primaryKey: true,
@@ -14,12 +15,17 @@ module.exports = sequelize => (
       type: DataTypes.STRING,
       defaultType: FUEL_TYPE.GASOLINE
     },
+    placa: DataTypes.STRING,
+    km: DataTypes.STRING,
     valor: DataTypes.DOUBLE,
     status: {
       type: DataTypes.INTEGER,
-      defaultValue: 1
-    }
+      defaultValue: SUPPLY_STATUS.PENDENT
+    },
+    totalLitros: DataTypes.DOUBLE,
+    totalCreditos: DataTypes.DOUBLE,
+    concludedDate: DataTypes.DATE
   }, {
-    tableName: 'ticket'
+    tableName: 'supply'
   })
 )

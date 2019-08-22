@@ -1,5 +1,5 @@
 module.exports = {
-  BUDGET_TYPE: {
+  BALANCE_TYPE: {
     PERSONAL: 'personal',
     SHARED: 'shared'
   }

@@ -17,7 +17,20 @@ module.exports = {
     })
 
     const gasStations = company.gasStations.map(gasStation => ({
+      id: gasStation.id,
       nome: gasStation.nome,
+      bandeira: gasStation.bandeira,
+      logradouro: gasStation.logradouro,
+      geoloc: {
+        latitude: gasStation.latitude,
+        longitude: gasStation.longitude
+      },
+      gasolina: gasStation.gasolina,
+      diesel: gasStation.diesel,
+      etanol: gasStation.etanol,
+      ganhoGasolina: gasStation.ganhoGasolina,
+      ganhoDiesel: gasStation.ganhoDiesel,
+      ganhoEtanol: gasStation.ganhoEtanol,
       horarioAtendimentoInicio: formatDateTime(gasStation.horarioAtendimentoInicio),
       horarioAtendimentoFim: formatDateTime(gasStation.horarioAtendimentoFim)
     }))

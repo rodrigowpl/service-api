@@ -9,6 +9,7 @@ router.post('/', async (req, res) => {
   const driver = await UserController.create(req.body)
   res.send(driver)
 })
-router.get('/:userId/saldo', UserController.getBudget)
+router.get('/:userId/saldo', UserController.getBalance)
+router.get('/:userId/historico', UserController.getSupplyHistory)
 
 module.exports = router

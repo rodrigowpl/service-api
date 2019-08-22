@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize')
 
 const { ACCOUNT_TYPE } = require('./account_type')
-const { BUDGET_TYPE } = require('./budget_type')
+const { BALANCE_TYPE } = require('./balance_type')
 
 module.exports = sequelize => (
   sequelize.define('user', {
@@ -28,7 +28,7 @@ module.exports = sequelize => (
     },
     tipoConta: {
       type: DataTypes.STRING,
-      defaultValue: ACCOUNT_TYPE.POS
+      defaultValue: ACCOUNT_TYPE.PRE
     },
     ativado: {
       type: DataTypes.INTEGER,
@@ -40,7 +40,7 @@ module.exports = sequelize => (
     },
     tipoSaldo: {
       type: DataTypes.STRING,
-      default: BUDGET_TYPE.PERSONAL
+      defaultValue: BALANCE_TYPE.SHARED
     }
   }, {
     tableName: 'user'

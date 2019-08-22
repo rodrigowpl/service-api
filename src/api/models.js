@@ -6,12 +6,12 @@ const SequelizeInstance = new Sequelize(CONNECTION_STRING, DB_OPTIONS)
 
 const User = require('./users/model')(SequelizeInstance)
 const GasStation = require('./gas-stations/model')(SequelizeInstance)
-const Ticket = require('./tickets/model')(SequelizeInstance)
+const Supply = require('./supplies/model')(SequelizeInstance)
 const Company = require('./companies/model')(SequelizeInstance)
 const GasStationCompany = require('./gas-stations-companies/model')(SequelizeInstance)
 
-Ticket.belongsTo(User)
-Ticket.belongsTo(GasStation)
+Supply.belongsTo(User)
+Supply.belongsTo(GasStation)
 
 User.belongsTo(Company)
 
@@ -29,5 +29,5 @@ module.exports = {
   Company,
   GasStation,
   GasStationCompany,
-  Ticket
+  Supply
 }

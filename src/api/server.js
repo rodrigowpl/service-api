@@ -6,6 +6,7 @@ const { SERVER_PORT } = require('../config/settings')
 const usersRoutes = require('./users/routes')
 const gastStationRoutes = require('./gas-stations/routes')
 const companyRoutes = require('./companies/routes')
+const supplyRoutes = require('./supplies/routes')
 
 const app = express()
 
@@ -28,6 +29,7 @@ app.get('/v1/usuarios', (req, res) => {
 app.use('/v1/usuarios', usersRoutes)
 app.use('/v1/postos', gastStationRoutes)
 app.use('/v1/empresa', companyRoutes)
+app.use('/v1/abastecimentos', supplyRoutes)
 
 module.exports = () => {
   return app.listen({ port }, () => {

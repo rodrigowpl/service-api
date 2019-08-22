@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize')
 
 module.exports = sequelize => (
-  sequelize.define('gas_station', {
+  sequelize.define('gasStation', {
     id: {
       type: DataTypes.STRING,
       primaryKey: true,
