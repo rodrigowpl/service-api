@@ -1,5 +1,4 @@
 const bcrypt = require('bcrypt')
-const createError = require('http-errors')
 
 const { User, Company, GasStation, Supply } = require('../models')
 
@@ -18,12 +17,22 @@ module.exports = {
     })
 
     if (!user) {
-      return next(createError(401, 'Usuário inválido'))
+      res.status(401).send({
+        status: 401,
+        result: 'Usuário inválido'
+      })
+
+      return next()
     }
 
     const isValidPassword = await bcrypt.compare(senha, user.senha)
     if (!isValidPassword) {
-      return next(createError(401, 'Senha inválida'))
+      res.status(401).send({
+        status: 401,
+        result: 'Senha inválida'
+      })
+
+      return next()
     }
 
     const token = generateJWTToken(email)
