@@ -1,4 +1,4 @@
-const { Company, User, GasStation } = require('../models')
+const { Company, User, GasStation, GasStationCompany } = require('../models')
 
 const { formatDateTime } = require('../../helpers/date')
 
@@ -17,6 +17,7 @@ module.exports = {
     })
 
     const gasStations = company.gasStations.map(gasStation => ({
+      nome: gasStation.nome,
       horarioAtendimentoInicio: formatDateTime(gasStation.horarioAtendimentoInicio),
       horarioAtendimentoFim: formatDateTime(gasStation.horarioAtendimentoFim)
     }))
@@ -27,5 +28,27 @@ module.exports = {
   create: async (req, res) => {
     const gasStation = await GasStation.create(req.body)
     res.send(gasStation)
+  },
+
+  enable: async (req, res) => {
+    const { postoId, empresaId } = req.body
+    await GasStationCompany.create({
+      gasStationId: postoId,
+      companyId: empresaId
+    })
+
+    res.send('Habilitado com sucesso!')
+  },
+
+  disable: async (req, res) => {
+    const { postoId, empresaId } = req.body
+    await GasStationCompany.destroy({
+      where: {
+        gasStationId: postoId,
+        companyId: empresaId
+      }
+    })
+
+    res.send('Desabilitado com sucesso!')
   }
 }

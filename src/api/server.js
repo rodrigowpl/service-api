@@ -5,7 +5,6 @@ const { SERVER_PORT } = require('../config/settings')
 
 const usersRoutes = require('./users/routes')
 const gastStationRoutes = require('./gas-stations/routes')
-const gasStationCompanyRoutes = require('./gas-stations-companies/routes')
 const companyRoutes = require('./companies/routes')
 
 const app = express()
@@ -28,10 +27,7 @@ app.get('/v1/usuarios', (req, res) => {
 
 app.use('/v1/usuarios', usersRoutes)
 app.use('/v1/postos', gastStationRoutes)
-
-//macro data
-app.use('/v1/gas-station-company', gasStationCompanyRoutes)
-app.use('/v1/company', companyRoutes)
+app.use('/v1/empresa', companyRoutes)
 
 module.exports = () => {
   return app.listen({ port }, () => {
