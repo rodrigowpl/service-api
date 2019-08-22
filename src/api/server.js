@@ -10,6 +10,8 @@ const companyRoutes = require('./companies/routes')
 
 const app = express()
 
+const port = process.env.PORT || SERVER_PORT
+
 app.use(express.urlencoded({ extended: false }))
 
 app.use(bodyParser.json({
@@ -32,7 +34,7 @@ app.use('/v1/gas-station-company', gasStationCompanyRoutes)
 app.use('/v1/company', companyRoutes)
 
 module.exports = () => {
-  return app.listen({ port: SERVER_PORT }, () => {
+  return app.listen({ port }, () => {
     console.log(`🚀 Server ready at http://localhost:${SERVER_PORT}`)
   })
 }
