@@ -149,5 +149,27 @@ module.exports = {
     })
 
     res.send({ token, status })
+  },
+
+
+  validateToken: async (req, res) => {
+    const { idAbastecimento, token } = req.body
+
+    const supply = await Supply.findOne({
+      where: {
+        id: idAbastecimento,
+        token
+      }
+    })
+
+    if (!supply) {
+      res.status(401).send({
+        status: 401,
+        result: 'Token inválido'
+      })
+      return
+    }
+
+    res.status(201).send()
   }
 }
