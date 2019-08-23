@@ -18,13 +18,21 @@ module.exports = {
       where: { userId }
     })
 
-    const response = supplies.reduce((curr, acc) => {
-      const supply = Object.assign(acc, {
-        emAndamento: curr
-      })
+    const pendent = supplies.filter(({ status }) => status === SUPPLY_STATUS.PENDENT)
+    const concluded = supplies.filter(({ status }) => status === SUPPLY_STATUS.CONCLUDED)
 
-      return supply
-    }, {})
+    const normalize = data => data.map(item => ({
+      id: item.id,
+      placa: item.placa,
+      valor: item.valor,
+      combustivel: item.combustivel,
+      hora: formatDateTime(item.createdAt)
+    }))
+
+    const response = {
+      emAndamento: normalize(pendent),
+      concluido: normalize(concluded)
+    }
 
     res.send(response)
   },
