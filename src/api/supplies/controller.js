@@ -132,10 +132,19 @@ module.exports = {
   cancelSupply: async (req, res) => {
     const { tokenId } = req.params
 
-    await Supply.update({
+    const supply = await Supply.findOne({
+      where: {
+        token: tokenId
+      }
+    })
+
+    if (!supply) {
+      res.status(404).send('Abastecimento não existente')
+      return
+    }
+
+    await supply.update({
       status: SUPPLY_STATUS.CANCELED
-    }, {
-      where: { token: tokenId }
     })
 
     res.send('Abastecimento cancelado com sucesso.')
