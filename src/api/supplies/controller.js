@@ -96,7 +96,12 @@ module.exports = {
     })
 
     if (supply.token !== token) {
-      res.send('token inválido')
+      res.status(401).send({
+        status: 401,
+        result: 'Token inválido'
+      })
+
+      return
     }
 
     await supply.update({
