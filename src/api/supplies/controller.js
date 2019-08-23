@@ -1,6 +1,7 @@
 const { Supply, GasStation, User, Company } = require('../models')
 
 const { fixedNumberTwoDecimals } = require('../../helpers/number')
+const { formatDateTime } = require('../../helpers/date')
 
 const { SUPPLY_STATUS } = require('../supplies/supply-status')
 const { FUEL_TYPE } = require('../supplies/fuel_type')
@@ -17,9 +18,13 @@ module.exports = {
       where: { userId }
     })
 
-    const response = supplies.map(() => ({
+    const response = supplies.reduce((curr, acc) => {
+      const supply = Object.assign(acc, {
+        emAndamento: curr
+      })
 
-    }))
+      return supply
+    }, {})
 
     res.send(response)
   },
