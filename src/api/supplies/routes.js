@@ -8,6 +8,6 @@ const router = express.Router()
 router.post('/', SupplyController.create)
 router.patch('/', SupplyController.performSupply)
 router.get('/status/:tokenId', SupplyController.getStatus)
-router.delete('/:supplyId', SupplyController.cancelSupply)
+router.delete('/:tokenId', SupplyController.cancelSupply)
 
 module.exports = router
