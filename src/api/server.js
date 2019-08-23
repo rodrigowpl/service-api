@@ -1,5 +1,6 @@
 const express = require('express')
 const bodyParser = require('body-parser')
+const cors = require('cors')
 
 const { SERVER_PORT } = require('../config/settings')
 
@@ -11,6 +12,8 @@ const supplyRoutes = require('./supplies/routes')
 const app = express()
 
 const port = process.env.PORT || SERVER_PORT
+
+app.use(cors())
 
 app.use(express.urlencoded({ extended: false }))
 
