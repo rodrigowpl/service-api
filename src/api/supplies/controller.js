@@ -10,6 +10,20 @@ const { BALANCE_TYPE } = require('../users/balance_type')
 const { generateRandomToken } = require('../../helpers/token')
 
 module.exports = {
+  getAll: async (req, res) => {
+    const { userId } = req.params
+
+    const supplies = await Supply.findAll({
+      where: { userId }
+    })
+
+    const response = supplies.map(() => ({
+
+    }))
+
+    res.send(response)
+  },
+
   create: async (req, res) => {
     const { idUsuario, idPosto, valor, combustivel, km, placa } = req.body
 
@@ -110,10 +124,10 @@ module.exports = {
   },
 
   getStatus: async (req, res) => {
-    const { supplyId } = req.params
+    const { tokenId } = req.params
 
     const { token, status } = await Supply.findOne({
-      where: { id: supplyId }
+      where: { token: tokenId }
     })
 
     res.send({ token, status })

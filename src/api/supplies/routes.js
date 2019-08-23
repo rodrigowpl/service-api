@@ -7,7 +7,7 @@ const router = express.Router()
 // router.get('/', SupplyController.getAll)
 router.post('/', SupplyController.create)
 router.patch('/', SupplyController.performSupply)
-router.get('/status/:supplyId', SupplyController.getStatus)
+router.get('/status/:tokenId', SupplyController.getStatus)
 router.delete('/:supplyId', SupplyController.cancelSupply)
 
 module.exports = router
