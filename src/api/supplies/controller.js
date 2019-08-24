@@ -98,12 +98,19 @@ module.exports = {
       include: [User]
     })
 
+    if (supply.status === SUPPLY_STATUS.CANCELED) {
+      res.status(422).send({
+        status: 422,
+        result: 'Abastecimento já foi cancelado'
+      })
+      return
+    }
+
     if (supply.token !== token) {
       res.status(401).send({
         status: 401,
         result: 'Token inválido'
       })
-
       return
     }
 
@@ -172,12 +179,19 @@ module.exports = {
 
     const supply = await Supply.findOne({
       where: {
-        id: idAbastecimento,
-        token
+        id: idAbastecimento
       }
     })
 
-    if (!supply) {
+    if (supply.status === SUPPLY_STATUS.CANCELED) {
+      res.status(422).send({
+        status: 422,
+        result: 'Abastecimento já foi cancelado'
+      })
+      return
+    }
+
+    if (supply.token !== token) {
       res.status(401).send({
         status: 401,
         result: 'Token inválido'
@@ -185,6 +199,6 @@ module.exports = {
       return
     }
 
-    res.status(201).send()
+    res.status(200).send({ isValid: true })
   }
 }
