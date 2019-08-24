@@ -1,6 +1,6 @@
 const { Company, User, GasStation, GasStationCompany } = require('../models')
 
-const { formatDateTime } = require('../../helpers/date')
+const { formatHour } = require('../../helpers/date')
 
 module.exports = {
   getAll: async (req, res) => {
@@ -31,8 +31,8 @@ module.exports = {
       ganhoGasolina: gasStation.ganhoGasolina,
       ganhoDiesel: gasStation.ganhoDiesel,
       ganhoEtanol: gasStation.ganhoEtanol,
-      horarioAtendimentoInicio: formatDateTime(gasStation.horarioAtendimentoInicio),
-      horarioAtendimentoFim: formatDateTime(gasStation.horarioAtendimentoFim)
+      horarioAtendimentoInicio: formatHour(gasStation.horarioAtendimentoInicio),
+      horarioAtendimentoFim: formatHour(gasStation.horarioAtendimentoFim)
     }))
 
     res.send(gasStations)

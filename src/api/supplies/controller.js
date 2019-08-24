@@ -1,14 +1,14 @@
+const { Op } = require('sequelize')
 const { Supply, GasStation, User, Company } = require('../models')
 
 const { fixedNumberTwoDecimals } = require('../../helpers/number')
-const { formatDateTime } = require('../../helpers/date')
+const { humanizeDateTime, formatHour } = require('../../helpers/date')
+const { generateRandomToken } = require('../../helpers/token')
 
 const { SUPPLY_STATUS } = require('../supplies/supply-status')
 const { FUEL_TYPE } = require('../supplies/fuel_type')
 
 const { BALANCE_TYPE } = require('../users/balance_type')
-
-const { generateRandomToken } = require('../../helpers/token')
 
 module.exports = {
   getAll: async (req, res) => {
@@ -18,20 +18,23 @@ module.exports = {
       where: { userId }
     })
 
-    const pendent = supplies.filter(({ status }) => status === SUPPLY_STATUS.PENDENT)
-    const concluded = supplies.filter(({ status }) => status === SUPPLY_STATUS.CONCLUDED)
+    const suppliesTypes = {
+      pendent: supplies.filter(({ status }) => status === SUPPLY_STATUS.PENDENT),
+      concluded: supplies.filter(({ status }) => status === SUPPLY_STATUS.CONCLUDED)
+    }
 
-    const normalize = data => data.map(item => ({
+    const normalize = type => suppliesTypes[type].map(item => ({
       id: item.id,
       placa: item.placa,
       valor: item.valor,
       combustivel: item.combustivel,
-      hora: formatDateTime(item.createdAt)
+      dataRealizado: type === 'concluded' ? humanizeDateTime(item.concludedDate) : formatHour(item.createdAt),
+      token: item.token
     }))
 
     const response = {
-      emAndamento: normalize(pendent),
-      concluido: normalize(concluded)
+      emAndamento: normalize('pendent'),
+      concluido: normalize('concluded')
     }
 
     res.send(response)
@@ -130,11 +133,14 @@ module.exports = {
   },
 
   cancelSupply: async (req, res) => {
-    const { tokenId } = req.params
+    const { supplyId } = req.params
 
     const supply = await Supply.findOne({
       where: {
-        token: tokenId
+        [Op.or]: {
+          id: supplyId,
+          token: supplyId
+        }
       }
     })
 

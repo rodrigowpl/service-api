@@ -4,7 +4,7 @@ const { User, Company, GasStation, Supply } = require('../models')
 
 const { SUPPLY_STATUS } = require('../supplies/supply-status')
 
-const { formatDate, formatDateTime } = require('../../helpers/date')
+const { humanizeDateTime } = require('../../helpers/date')
 const { generateJWTToken } = require('../../helpers/token')
 
 const { BALANCE_TYPE } = require('./balance_type')
@@ -98,7 +98,7 @@ module.exports = {
         nome: gasStation.nome,
         bandeira: gasStation.bandeira,
         logradouro: gasStation.logradouro,
-        data: `${formatDate(concludedDate)} às ${formatDateTime(concludedDate)}`,
+        data: humanizeDateTime(concludedDate),
         combustivel,
         totalLitros,
         valorAbastecimento: valor,

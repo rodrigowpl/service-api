@@ -1,11 +1,15 @@
 const { format } = require('date-fns')
 
-module.exports = {
-  formatDateTime: date => {
-    return format(date, 'HH:mm')
-  },
+const formatHour = date => {
+  return format(date, 'HH:mm')
+}
 
-  formatDate: date => {
-    return format(date, 'DD/MM/YYYY')
-  }
+const formatDate = date => {
+  return format(date, 'DD/MM/YYYY')
+}
+
+module.exports = {
+  formatHour,
+  formatDate,
+  humanizeDateTime: date => `${formatDate(date)} às ${formatHour(date)}`
 }
