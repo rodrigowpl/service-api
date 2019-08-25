@@ -53,13 +53,13 @@ module.exports = {
       numero: supply.codigo,
       data: formatDate(supply.dataConclusao),
       hora: formatHour(supply.dataConclusao),
-      valor: supply.valor,
+      valor: `R$${supply.valor}`,
       combustivel: supply.combustivel,
       empresa: supply.user.company.nome,
-      taxaGasola: 0.00,
-      valorReceber: 0.00,
+      taxaGasola: `${0.00}%`,
+      valorReceber: `R$${0.00}`,
       totalLitros: supply.totalLitros,
-      prazoPagamento: 0,
+      prazoPagamento: `${0} dias úteis`,
       dataPagamento: '00/00/0000',
       usuario: supply.user.nome
     }))
