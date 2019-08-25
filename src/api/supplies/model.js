@@ -10,21 +10,38 @@ module.exports = sequelize => (
       primaryKey: true,
       defaultValue: DataTypes.UUIDV1
     },
-    token: DataTypes.STRING,
+    codigo: {
+      type: DataTypes.INTEGER
+    },
+    token: {
+      type: DataTypes.STRING
+    },
     combustivel: {
       type: DataTypes.STRING,
       defaultType: FUEL_TYPE.GASOLINE
     },
-    placa: DataTypes.STRING,
-    km: DataTypes.STRING,
-    valor: DataTypes.DOUBLE,
+    placa: {
+      type: DataTypes.STRING
+    },
+    km: {
+      type: DataTypes.STRING
+    },
+    valor: {
+      type: DataTypes.DOUBLE
+    },
     status: {
       type: DataTypes.INTEGER,
       defaultValue: SUPPLY_STATUS.PENDENT
     },
-    totalLitros: DataTypes.DOUBLE,
-    totalCreditos: DataTypes.DOUBLE,
-    concludedDate: DataTypes.DATE
+    totalLitros: {
+      type: DataTypes.DOUBLE
+    },
+    totalCreditos: {
+      type: DataTypes.DOUBLE
+    },
+    dataConclusao: {
+      type: DataTypes.DATE
+    }
   }, {
     tableName: 'supply'
   })

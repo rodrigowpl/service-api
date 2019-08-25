@@ -7,7 +7,7 @@ const { SUPPLY_STATUS } = require('../supplies/supply-status')
 const { humanizeDateTime } = require('../../helpers/date')
 const { generateJWTToken } = require('../../helpers/token')
 
-const { BALANCE_TYPE } = require('./balance_type')
+const { BALANCE_TYPE } = require('./balance-type')
 
 module.exports = {
   login: async (req, res, next) => {
@@ -93,12 +93,12 @@ module.exports = {
       include: [GasStation]
     })
 
-    const history = concludedSupplies.map(({ gasStation, combustivel, totalLitros, totalCreditos, concludedDate, valor }) => {
+    const history = concludedSupplies.map(({ gasStation, combustivel, totalLitros, totalCreditos, dataConclusao, valor }) => {
       return {
         nome: gasStation.nome,
         bandeira: gasStation.bandeira,
         logradouro: gasStation.logradouro,
-        data: humanizeDateTime(concludedDate),
+        data: humanizeDateTime(dataConclusao),
         combustivel,
         totalLitros,
         valorAbastecimento: valor,

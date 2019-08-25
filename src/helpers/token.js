@@ -16,5 +16,7 @@ module.exports = {
     }
 
     return result
-  }
+  },
+
+  generatePinCode: (length = 4) => Math.random().toString().substr(2, length)
 }

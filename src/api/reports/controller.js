@@ -5,34 +5,7 @@ const { Supply, User, Company } = require('../models')
 const { SUPPLY_STATUS } = require('../supplies/supply-status')
 
 const { formatDate, formatHour } = require('../../helpers/date')
-
-const buildRangeFilterQuery = (where, queryField, startValue, endValue) => {
-  if (startValue && endValue) {
-    return {
-      ...where,
-      [queryField]: {
-        [Op.between]: [startValue, endValue]
-      }
-    }
-  } else if (startValue) {
-    return {
-      ...where,
-      [queryField]: {
-        [Op.gt]: startValue
-      }
-    }
-  } else if (endValue) {
-    return {
-      ...where,
-      [queryField]: {
-        [Op.or]: {
-          [Op.lt]: endValue,
-          [Op.eq]: endValue
-        }
-      }
-    }
-  }
-}
+const { buildRangeFilterQuery } = require('../../helpers/sequelize-queries')
 
 module.exports = {
   getAllSupplies: async (req, res) => {
@@ -43,7 +16,7 @@ module.exports = {
     }
 
     if (dataDe || dataAte) {
-      where = buildRangeFilterQuery(where, 'concluded_date', dataDe, dataAte)
+      where = buildRangeFilterQuery(where, 'data_conclusao', dataDe, dataAte)
     }
 
     if (valorDe || valorAte) {
@@ -77,9 +50,9 @@ module.exports = {
     })
 
     const reportSupplies = supplies.map(supply => ({
-      numero: '00000',
-      data: formatDate(supply.concludedDate),
-      hora: formatHour(supply.concludedDate),
+      numero: supply.codigo,
+      data: formatDate(supply.dataConclusao),
+      hora: formatHour(supply.dataConclusao),
       valor: supply.valor,
       combustivel: supply.combustivel,
       empresa: supply.user.company.nome,

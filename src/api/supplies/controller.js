@@ -3,12 +3,12 @@ const { Supply, GasStation, User, Company } = require('../models')
 
 const { fixedNumberTwoDecimals } = require('../../helpers/number')
 const { humanizeDateTime, formatHour } = require('../../helpers/date')
-const { generateRandomToken } = require('../../helpers/token')
+const { generateRandomToken, generatePinCode } = require('../../helpers/token')
 
 const { SUPPLY_STATUS } = require('../supplies/supply-status')
 const { FUEL_TYPE } = require('../supplies/fuel_type')
 
-const { BALANCE_TYPE } = require('../users/balance_type')
+const { BALANCE_TYPE } = require('../users/balance-type')
 
 module.exports = {
   getAll: async (req, res) => {
@@ -28,7 +28,7 @@ module.exports = {
       placa: item.placa,
       valor: item.valor,
       combustivel: item.combustivel,
-      dataRealizado: type === 'concluded' ? humanizeDateTime(item.concludedDate) : formatHour(item.createdAt),
+      dataRealizado: type === 'concluded' ? humanizeDateTime(item.dataConclusao) : formatHour(item.createdAt),
       token: item.token
     }))
 
@@ -116,7 +116,8 @@ module.exports = {
 
     await supply.update({
       status: SUPPLY_STATUS.CONCLUDED,
-      concludedDate: new Date()
+      dataConclusao: new Date(),
+      codigo: generatePinCode(8)
     })
 
     const user = await User.findOne({

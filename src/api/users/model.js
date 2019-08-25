@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize')
 
-const { ACCOUNT_TYPE } = require('./account_type')
-const { BALANCE_TYPE } = require('./balance_type')
+const { ACCOUNT_TYPE } = require('./account-type')
+const { BALANCE_TYPE } = require('./balance-type')
 
 module.exports = sequelize => (
   sequelize.define('user', {
