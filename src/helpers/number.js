@@ -1,5 +1,5 @@
 module.exports = {
-  fixedNumberTwoDecimals: (value) => {
-    return Math.round(value * 100) / 100
-  }
+  fixedNumberTwoDecimals: (value) => Math.round(value * 100) / 100,
+
+  calcPercentage: (value, percent) => (value * percent) / 100
 }

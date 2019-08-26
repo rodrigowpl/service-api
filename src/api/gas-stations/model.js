@@ -7,19 +7,45 @@ module.exports = sequelize => (
       primaryKey: true,
       defaultValue: DataTypes.UUIDV1
     },
-    nome: DataTypes.STRING,
-    logradouro: DataTypes.STRING,
-    horarioAtendimentoInicio: DataTypes.DATE,
-    horarioAtendimentoFim: DataTypes.DATE,
-    bandeira: DataTypes.STRING,
-    latitude: DataTypes.DOUBLE,
-    longitude: DataTypes.DOUBLE,
-    gasolina: DataTypes.DOUBLE,
-    diesel: DataTypes.DOUBLE,
-    etanol: DataTypes.DOUBLE,
-    ganhoGasolina: DataTypes.DOUBLE,
-    ganhoDiesel: DataTypes.DOUBLE,
-    ganhoEtanol: DataTypes.DOUBLE
+    nome: {
+      type: DataTypes.STRING
+    },
+    logradouro: {
+      type: DataTypes.STRING
+    },
+    horarioAtendimentoInicio: {
+      type: DataTypes.DATE
+    },
+    horarioAtendimentoFim: {
+      type: DataTypes.DATE
+    },
+    bandeira: {
+      type: DataTypes.STRING
+    },
+    latitude: {
+      type: DataTypes.DOUBLE
+    },
+    longitude: {
+      type: DataTypes.DOUBLE
+    },
+    gasolina: {
+      type: DataTypes.DOUBLE
+    },
+    diesel: {
+      type: DataTypes.DOUBLE
+    },
+    etanol: {
+      type: DataTypes.DOUBLE
+    },
+    ganhoGasolina: {
+      type: DataTypes.DOUBLE
+    },
+    ganhoDiesel: {
+      type: DataTypes.DOUBLE
+    },
+    ganhoEtanol: {
+      type: DataTypes.DOUBLE
+    }
   }, {
     tableName: 'gas_station'
   })

@@ -9,6 +9,7 @@ const gastStationRoutes = require('./gas-stations/routes')
 const companyRoutes = require('./companies/routes')
 const supplyRoutes = require('./supplies/routes')
 const reportsRoutes = require('./reports/routes')
+const configurationRoutes = require('./configurations/routes')
 
 const app = express()
 
@@ -35,6 +36,7 @@ app.use('/v1/postos', gastStationRoutes)
 app.use('/v1/empresa', companyRoutes)
 app.use('/v1/abastecimentos', supplyRoutes)
 app.use('/v1/relatorios', reportsRoutes)
+app.use('/v1/configuracoes', configurationRoutes)
 
 module.exports = () => {
   return app.listen({ port }, () => {
