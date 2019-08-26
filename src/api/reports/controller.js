@@ -18,8 +18,8 @@ module.exports = {
       combustivel,
       pagamentoDe,
       pagamentoAte,
-      page = 0,
-      pageSize = 10
+      page,
+      pageSize
     } = req.query
 
     let where = {

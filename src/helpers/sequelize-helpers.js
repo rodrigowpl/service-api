@@ -30,12 +30,11 @@ module.exports = {
   },
 
   buildPaginatedQuery: (where, { page, pageSize }) => {
-    const offset = page * pageSize
-    const limit = offset + pageSize
+    const offset = (parseInt(page) - 1) * pageSize
     return {
       where,
-      offset,
-      limit
+      offset: offset,
+      limit: pageSize
     }
   }
 }

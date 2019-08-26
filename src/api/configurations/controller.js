@@ -29,9 +29,11 @@ module.exports = {
 
   getConfiguration: async ({ fuelType, companyId, gasStationId }) => {
     const configuration = await Configuration.findOne({
-      combustivel: fuelType,
-      companyId,
-      gasStationId
+      where: {
+        combustivel: fuelType,
+        companyId,
+        gasStationId
+      }
     })
 
     return configuration
