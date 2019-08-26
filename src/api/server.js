@@ -33,7 +33,7 @@ app.get('/v1/usuarios', (req, res) => {
 
 app.use('/v1/usuarios', usersRoutes)
 app.use('/v1/postos', gastStationRoutes)
-app.use('/v1/empresa', companyRoutes)
+app.use('/v1/empresas', companyRoutes)
 app.use('/v1/abastecimentos', supplyRoutes)
 app.use('/v1/relatorios', reportsRoutes)
 app.use('/v1/configuracoes', configurationRoutes)

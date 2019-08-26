@@ -27,5 +27,15 @@ module.exports = {
         }
       }
     }
+  },
+
+  buildPaginatedQuery: (where, { page, pageSize }) => {
+    const offset = page * pageSize
+    const limit = offset + pageSize
+    return {
+      where,
+      offset,
+      limit
+    }
   }
 }

@@ -3,14 +3,24 @@ const { Supply, User, Company } = require('../models')
 const { SUPPLY_STATUS } = require('../supplies/supply-status')
 
 const { formatDate, formatHour } = require('../../helpers/date')
-const { buildRangeFilterQuery } = require('../../helpers/sequelize-queries')
+const { buildRangeFilterQuery, buildPaginatedQuery } = require('../../helpers/sequelize-helpers')
 const { calcPercentage, fixedNumberTwoDecimals } = require('../../helpers/number')
 
 const ConfigurationController = require('../configurations/controller')
 
 module.exports = {
   getAllSupplies: async (req, res) => {
-    const { dataDe, dataAte, valorDe, valorAte, combustivel, pagamentoDe, pagamentoAte } = req.query
+    const {
+      dataDe,
+      dataAte,
+      valorDe,
+      valorAte,
+      combustivel,
+      pagamentoDe,
+      pagamentoAte,
+      page = 0,
+      pageSize = 10
+    } = req.query
 
     let where = {
       status: SUPPLY_STATUS.CONCLUDED
@@ -35,7 +45,9 @@ module.exports = {
       }
     }
 
-    const supplies = await Supply.findAll({ where })
+    const { count, rows: supplies } = await Supply.findAndCountAll(
+      buildPaginatedQuery(where, { page, pageSize })
+    )
 
     const reportSupplies = await Promise.all(
       supplies.map(async supply => {
@@ -70,6 +82,11 @@ module.exports = {
       })
     )
 
-    res.send(reportSupplies)
+    const response = {
+      totalPaginas: Math.ceil(count / pageSize),
+      abastecimentos: reportSupplies
+    }
+
+    res.send(response)
   }
 }
