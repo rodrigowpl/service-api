@@ -44,9 +44,11 @@ module.exports = {
       }
     }
 
-    const { count, rows: supplies } = await Supply.findAndCountAll(
-      buildPaginatedQuery(where, { page, pageSize })
-    )
+    const { count, rows: supplies } = await Supply.findAndCountAll({
+      where,
+      order: [['data_conclusao', 'DESC']],
+      ...buildPaginatedQuery({ page, pageSize })
+    })
 
     const reportSupplies = await Promise.all(
       supplies.map(async supply => {
