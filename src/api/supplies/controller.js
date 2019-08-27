@@ -178,6 +178,7 @@ module.exports = {
 
     const supply = await Supply.findOne({
       where: {
+        status: SUPPLY_STATUS.PENDENT,
         [Op.or]: {
           id: supplyId,
           token: supplyId
@@ -186,7 +187,7 @@ module.exports = {
     })
 
     if (!supply) {
-      res.status(404).send('Abastecimento não existente')
+      res.send('Abastecimento não existente ou já foi confirmado.')
       return
     }
 

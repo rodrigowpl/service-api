@@ -7,6 +7,7 @@ module.exports = {
     })
     res.send(companies)
   },
+
   create: async (req, res) => {
     const { nome, saldo } = req.body
 
