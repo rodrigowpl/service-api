@@ -1,7 +1,9 @@
 const { format, addDays } = require('date-fns')
 
 const formatHour = date => {
-  return format(date, 'HH:mm')
+  return format(date, 'HH:mm', {
+    timeZone: 'America/Sao_Paulo'
+  })
 }
 
 const formatDate = (date, daysToAdd) => {
