@@ -1,4 +1,6 @@
 const { Op } = require('sequelize')
+const { startOfDay, endOfDay } = require('date-fns')
+
 const { Supply, GasStation, User, Company } = require('../models')
 
 const { formatDate } = require('../../helpers/date')
@@ -17,16 +19,29 @@ module.exports = {
   getAll: async (req, res) => {
     const { userId } = req.params
 
-    const supplies = await Supply.findAll({
-      where: { userId }
+    const pendentSupplies = await Supply.findAll({
+      where: {
+        userId,
+        status: SUPPLY_STATUS.PENDENT,
+        createdAt: {
+          [Op.between]: [startOfDay(new Date()), endOfDay(new Date())]
+        },
+      },
+      order: [['created_at', 'DESC']]
     })
 
-    const suppliesTypes = {
-      pendent: supplies.filter(({ status }) => status === SUPPLY_STATUS.PENDENT),
-      concluded: supplies.filter(({ status }) => status === SUPPLY_STATUS.CONCLUDED)
-    }
+    const concludedSupplies = await Supply.findAll({
+      where: {
+        userId,
+        status: SUPPLY_STATUS.CONCLUDED,
+        dataConclusao: {
+          [Op.between]: [startOfDay(new Date()), endOfDay(new Date())]
+        },
+      },
+      order: [['data_conclusao', 'DESC']]
+    })
 
-    const normalize = type => suppliesTypes[type].map(item => ({
+    const normalize = (type, data) => data.map(item => ({
       id: item.id,
       placa: item.placa,
       valor: item.valor,
@@ -36,8 +51,8 @@ module.exports = {
     }))
 
     const response = {
-      emAndamento: normalize('pendent'),
-      concluido: normalize('concluded')
+      emAndamento: normalize('pendent', pendentSupplies),
+      concluido: normalize('concluded', concludedSupplies)
     }
 
     res.send(response)
