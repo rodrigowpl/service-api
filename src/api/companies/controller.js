@@ -22,32 +22,40 @@ module.exports = {
   getTotalBiling: async (req, res) => {
     const { userId } = req.params
 
-    const { company } = await User.findOne({
-      where: { id: userId },
-      include: [{
-        model: Company,
-        include: [{
-          model: GasStation,
-          as: 'gasStations'
-        }]
-      }]
+    // const { company } = await User.findOne({
+    //   where: { id: userId },
+    //   include: [{
+    //     model: Company,
+    //     include: [{
+    //       model: GasStation,
+    //       as: 'gasStations'
+    //     }]
+    //   }]
+    // })
+
+    // const allGasStationSupplies = await Promise.all(
+    //   company.gasStations.map(async ({ id }) => {
+    //     const supplies = await Supply.findAll({
+    //       where: { gasStationId: id },
+    //       status: SUPPLY_STATUS.CONCLUDED
+    //     })
+
+    //     return supplies.map(({ valor }) => valor)
+    //   })
+    // )
+
+    const supplies = await Supply.findAll({
+      where: {
+        userId,
+        status: SUPPLY_STATUS.CONCLUDED
+      },
     })
 
-    const allGasStationSupplies = await Promise.all(
-      company.gasStations.map(async ({ id }) => {
-        const supplies = await Supply.findAll({
-          where: { gasStationId: id },
-          status: SUPPLY_STATUS.CONCLUDED
-        })
-
-        return supplies.map(({ valor }) => valor)
-      })
-    )
-
-    console.log(allGasStationSupplies[0])
+    const values = supplies.map(({ valor }) => valor)
+    const biling = R.sum(values).toFixed(2)
 
     res.send({
-      faturamento: R.sum(allGasStationSupplies[0])
+      faturamento: biling
     })
   }
 }
