@@ -4,6 +4,7 @@ const { SUPPLY_STATUS } = require('../supplies/supply-status')
 
 const { formatDate, formatHour } = require('../../helpers/date')
 const { buildRangeFilterQuery, buildPaginatedQuery } = require('../../helpers/sequelize-helpers')
+const { fixedNumberTwoDecimals, calcPercentage } = require('../../helpers/number')
 
 const ConfigurationController = require('../configurations/controller')
 
@@ -71,6 +72,9 @@ module.exports = {
           return
         }
 
+        const valueDiscounted = calcPercentage(supply.valor, configuration.taxaGasola)
+        const taxedValue = fixedNumberTwoDecimals(supply.valor - valueDiscounted)
+
         return {
           numero: supply.codigo,
           data: formatDate(supply.dataConclusao),
@@ -79,7 +83,7 @@ module.exports = {
           combustivel: supply.combustivel,
           empresa: user.company.nome,
           taxaGasola: `${configuration.taxaGasola}%`,
-          valorReceber: `R$${supply.valorTaxado}`,
+          valorReceber: `R$${taxedValue}`,
           totalLitros: supply.totalLitros,
           prazoPagamento: `${configuration.prazoPagamentoGasola} dias úteis`,
           dataPagamento: supply.dataPagamento,
