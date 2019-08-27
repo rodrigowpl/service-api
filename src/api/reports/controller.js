@@ -94,7 +94,8 @@ module.exports = {
 
     const response = {
       totalPaginas: Math.ceil(count / pageSize),
-      abastecimentos: reportSupplies
+      abastecimentos: reportSupplies,
+      total: count
     }
 
     res.send(response)
