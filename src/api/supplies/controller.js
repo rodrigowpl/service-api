@@ -1,7 +1,8 @@
 const { Op } = require('sequelize')
 const { Supply, GasStation, User, Company } = require('../models')
 
-const { fixedNumberTwoDecimals } = require('../../helpers/number')
+const { formatDate } = require('../../helpers/date')
+const { fixedNumberTwoDecimals, calcPercentage } = require('../../helpers/number')
 const { humanizeDateTime, formatHour } = require('../../helpers/date')
 const { generateRandomToken, generatePinCode } = require('../../helpers/token')
 
@@ -9,6 +10,8 @@ const { SUPPLY_STATUS } = require('../supplies/supply-status')
 const { FUEL_TYPE } = require('../supplies/fuel_type')
 
 const { BALANCE_TYPE } = require('../users/balance-type')
+
+const ConfigurationController = require('../configurations/controller')
 
 module.exports = {
   getAll: async (req, res) => {
@@ -70,7 +73,28 @@ module.exports = {
     const totalLiters = fixedNumberTwoDecimals(supplyValue / fuelValue)
     const totalCredits = fixedNumberTwoDecimals(totalLiters * fuelCredit)
 
+    const user = await User.findOne({
+      where: { id: idUsuario }
+    })
+    const configuration = await ConfigurationController.getConfiguration({
+      companyId: user.companyId,
+      fuelType: combustivel,
+      gasStationId: gasStation.id
+    })
+
+    if (!configuration) {
+      res.status(422).send({
+        code: 422,
+        result: 'Nenhuma configuraçào cadastrada para essa empresa, posto ou tipo do combustível.'
+      })
+      return
+    }
+
+    const valueDiscounted = calcPercentage(supplyValue, configuration.taxaGasola)
+    const taxedValue = fixedNumberTwoDecimals(supplyValue - valueDiscounted)
+
     const supply = await Supply.create({
+      codigo: generatePinCode(8),
       userId: idUsuario,
       gasStationId: idPosto,
       valor: supplyValue,
@@ -79,7 +103,9 @@ module.exports = {
       placa,
       token,
       totalLitros: totalLiters,
-      totalCreditos: totalCredits
+      totalCreditos: totalCredits,
+      valorTaxado: taxedValue,
+      dataPagamento: formatDate(supply.dataConclusao, configuration.prazoPagamentoGasola),
     })
 
     const response = {
@@ -116,8 +142,7 @@ module.exports = {
 
     await supply.update({
       status: SUPPLY_STATUS.CONCLUDED,
-      dataConclusao: new Date(),
-      codigo: generatePinCode(8)
+      dataConclusao: new Date()
     })
 
     const user = await User.findOne({

@@ -4,7 +4,6 @@ const { SUPPLY_STATUS } = require('../supplies/supply-status')
 
 const { formatDate, formatHour } = require('../../helpers/date')
 const { buildRangeFilterQuery, buildPaginatedQuery } = require('../../helpers/sequelize-helpers')
-const { calcPercentage, fixedNumberTwoDecimals } = require('../../helpers/number')
 
 const ConfigurationController = require('../configurations/controller')
 
@@ -62,8 +61,13 @@ module.exports = {
           gasStationId: supply.gasStationId
         })
 
-        const valueDiscounted = calcPercentage(supply.valor, configuration.taxaGasola)
-        const receivedValue = fixedNumberTwoDecimals(supply.valor - valueDiscounted)
+        if (!configuration) {
+          res.status(422).send({
+            code: 422,
+            result: 'Nenhuma configuraçào cadastrada para essa empresa, posto ou tipo do combustível.'
+          })
+          return
+        }
 
         return {
           numero: supply.codigo,
@@ -73,10 +77,10 @@ module.exports = {
           combustivel: supply.combustivel,
           empresa: user.company.nome,
           taxaGasola: `${configuration.taxaGasola}%`,
-          valorReceber: `R$${receivedValue}`,
+          valorReceber: `R$${supply.valorTaxado}`,
           totalLitros: supply.totalLitros,
           prazoPagamento: `${configuration.prazoPagamentoGasola} dias úteis`,
-          dataPagamento: formatDate(supply.dataConclusao, configuration.prazoPagamentoGasola),
+          dataPagamento: supply.dataPagamento,
           usuario: user.nome
         }
       })
