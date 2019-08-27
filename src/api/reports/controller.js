@@ -16,8 +16,8 @@ module.exports = {
       valorDe,
       valorAte,
       combustivel,
-      pagamentoDe,
-      pagamentoAte,
+      dataPagamentoDe,
+      dataPagamentoAte,
       page,
       pageSize
     } = req.query
@@ -34,8 +34,8 @@ module.exports = {
       where = buildRangeFilterQuery(where, 'valor', valorDe, valorAte)
     }
 
-    if (pagamentoDe || pagamentoAte) {
-      where = buildRangeFilterQuery(where, 'data_pagamento', pagamentoDe, pagamentoAte)
+    if (dataPagamentoDe || dataPagamentoAte) {
+      where = buildRangeFilterQuery(where, 'data_pagamento', dataPagamentoDe, dataPagamentoAte)
     }
 
     if (combustivel) {
