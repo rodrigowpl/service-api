@@ -29,9 +29,6 @@ module.exports = sequelize => (
     valor: {
       type: DataTypes.DOUBLE
     },
-    valorTaxado: {
-      type: DataTypes.DOUBLE
-    },
     status: {
       type: DataTypes.INTEGER,
       defaultValue: SUPPLY_STATUS.PENDENT
