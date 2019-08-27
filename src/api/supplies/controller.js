@@ -1,9 +1,8 @@
 const { Op } = require('sequelize')
-const { startOfDay, endOfDay } = require('date-fns')
+const { startOfDay, endOfDay, addDays } = require('date-fns')
 
 const { Supply, GasStation, User, Company } = require('../models')
 
-const { formatDate } = require('../../helpers/date')
 const { fixedNumberTwoDecimals } = require('../../helpers/number')
 const { humanizeDateTime, formatHour } = require('../../helpers/date')
 const { generateRandomToken, generatePinCode } = require('../../helpers/token')
@@ -156,7 +155,7 @@ module.exports = {
     await supply.update({
       status: SUPPLY_STATUS.CONCLUDED,
       dataConclusao: today,
-      dataPagamento: formatDate(today, configuration.prazoPagamentoGasola),
+      dataPagamento: addDays(today, configuration.prazoPagamentoGasola),
     })
 
     const subtractValue = supply.valor - supply.totalCreditos
