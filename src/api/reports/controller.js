@@ -2,7 +2,7 @@ const { Supply, User, Company } = require('../models')
 
 const { SUPPLY_STATUS } = require('../supplies/supply-status')
 
-const { formatDate, formatHour } = require('../../helpers/date')
+const { formatDate, formatHour, getUTCDate } = require('../../helpers/date')
 const { buildRangeFilterQuery, buildPaginatedQuery } = require('../../helpers/sequelize-helpers')
 const { fixedNumberTwoDecimals, calcPercentage } = require('../../helpers/number')
 
@@ -27,7 +27,12 @@ module.exports = {
     }
 
     if (dataDe || dataAte) {
-      where = buildRangeFilterQuery(where, 'data_conclusao', dataDe, dataAte)
+      where = buildRangeFilterQuery(
+        where,
+        'data_conclusao',
+        getUTCDate(dataDe),
+        getUTCDate(dataAte)
+      )
     }
 
     if (valorDe || valorAte) {
@@ -35,7 +40,12 @@ module.exports = {
     }
 
     if (dataPagamentoDe || dataPagamentoAte) {
-      where = buildRangeFilterQuery(where, 'data_pagamento', dataPagamentoDe, dataPagamentoAte)
+      where = buildRangeFilterQuery(
+        where,
+        'data_pagamento',
+        getUTCDate(dataPagamentoDe),
+        getUTCDate(dataPagamentoAte)
+      )
     }
 
     if (combustivel) {

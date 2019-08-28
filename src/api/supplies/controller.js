@@ -4,7 +4,7 @@ const { startOfDay, endOfDay, addDays } = require('date-fns')
 const { Supply, GasStation, User, Company } = require('../models')
 
 const { fixedNumberTwoDecimals } = require('../../helpers/number')
-const { humanizeDateTime, formatHour, getTodayDate } = require('../../helpers/date')
+const { humanizeDateTime, formatHour } = require('../../helpers/date')
 const { generateRandomToken, generatePinCode } = require('../../helpers/token')
 
 const { SUPPLY_STATUS } = require('../supplies/supply-status')
@@ -152,9 +152,6 @@ module.exports = {
     }
 
     const today = new Date()
-
-    console.log('today date', getTodayDate())
-
     await supply.update({
       status: SUPPLY_STATUS.CONCLUDED,
       dataConclusao: today,

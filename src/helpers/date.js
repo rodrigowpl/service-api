@@ -1,5 +1,4 @@
 const { format, addDays } = require('date-fns')
-const { convertToTimeZone } = require('date-fns-timezone')
 
 const formatHour = date => {
   return format(date, 'HH:mm')
@@ -20,8 +19,8 @@ module.exports = {
 
   humanizeDateTime: date => `${formatDate(date)} às ${formatHour(date)}`,
 
-  getTodayDate: () => {
-    const result = convertToTimeZone(new Date(2019, 8, 25, 1, 0), { timeZone: 'America/Sao_Paulo' })
-    return result
+  getUTCDate: (date) => {
+    const convertDate = new Date(date)
+    return new Date(convertDate.getTime() + (convertDate.getTimezoneOffset() * 60000))
   }
 }
