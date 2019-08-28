@@ -16,6 +16,6 @@ module.exports = {
       underscored: true
     },
     logging: false,
-    timezone: '-03:00'
+    timezone: 'America/Sao_Paulo'
   }
 }
