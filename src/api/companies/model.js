@@ -7,11 +7,7 @@ module.exports = sequelize => (
       primaryKey: true,
       defaultValue: DataTypes.UUIDV1
     },
-    nome: DataTypes.STRING,
-    saldo: {
-      type: DataTypes.DOUBLE,
-      defaultValue: 0
-    }
+    nome: DataTypes.STRING
   }, {
     tableName: 'company'
   })

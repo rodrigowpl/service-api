@@ -1,7 +1,7 @@
 const { Op } = require('sequelize')
 const { startOfDay, endOfDay, addDays } = require('date-fns')
 
-const { Supply, GasStation, User, Company } = require('../models')
+const { Supply, GasStation, User, Account } = require('../models')
 
 const { fixedNumberTwoDecimals } = require('../../helpers/number')
 const { humanizeDateTime, formatHour } = require('../../helpers/date')
@@ -133,12 +133,15 @@ module.exports = {
     }
 
     const user = await User.findOne({
-      where: { id: supply.user.id },
-      include: [Company]
+      where: { id: supply.user.id }
+    })
+
+    const account = await Account.findOne({
+      where: { id: user.accountId }
     })
 
     const configuration = await ConfigurationController.getConfiguration({
-      companyId: user.companyId,
+      companyId: account.companyId,
       fuelType: supply.combustivel,
       gasStationId: supply.gasStationId
     })
@@ -161,12 +164,8 @@ module.exports = {
     const subtractValue = supply.valor - supply.totalCreditos
 
     if (user.tipoSaldo === BALANCE_TYPE.SHARED) {
-      const company = await Company.findOne({
-        where: { id: user.company.id }
-      })
-
-      await company.update({
-        saldo: company.saldo - subtractValue
+      await account.update({
+        saldo: account.saldo - subtractValue
       })
     }
 

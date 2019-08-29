@@ -1,4 +1,4 @@
-const { Company, User, Supply, GasStation } = require('../models')
+const { Company, User, Supply, GasStation, Account } = require('../models')
 const R = require('ramda')
 
 const { SUPPLY_STATUS } = require('../supplies/supply-status')
@@ -22,33 +22,20 @@ module.exports = {
   getTotalBiling: async (req, res) => {
     const { userId } = req.params
 
-    // const { company } = await User.findOne({
-    //   where: { id: userId },
-    //   include: [{
-    //     model: Company,
-    //     include: [{
-    //       model: GasStation,
-    //       as: 'gasStations'
-    //     }]
-    //   }]
-    // })
+    const user = await User.findOne({
+      where: { id: userId }
+    })
 
-    // const allGasStationSupplies = await Promise.all(
-    //   company.gasStations.map(async ({ id }) => {
-    //     const supplies = await Supply.findAll({
-    //       where: { gasStationId: id },
-    //       status: SUPPLY_STATUS.CONCLUDED
-    //     })
-
-    //     return supplies.map(({ valor }) => valor)
-    //   })
-    // )
+    const { gasStation } = await Account.findOne({
+      where: { id: user.accountId },
+      include: [GasStation]
+    })
 
     const supplies = await Supply.findAll({
       where: {
-        userId,
+        gasStationId: gasStation.id,
         status: SUPPLY_STATUS.CONCLUDED
-      },
+      }
     })
 
     const values = supplies.map(({ valor }) => valor)

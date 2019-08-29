@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt')
 
-const { User, Company, GasStation, Supply } = require('../models')
+const { User, Account, GasStation, Supply } = require('../models')
 
 const { SUPPLY_STATUS } = require('../supplies/supply-status')
 
@@ -67,12 +67,12 @@ module.exports = {
 
     const user = await User.findOne({
       where: { id: userId },
-      include: [Company]
+      include: [Account]
     })
 
     let balance = 0
     if (user.tipoSaldo === BALANCE_TYPE.SHARED) {
-      balance = user.company.saldo
+      balance = user.account.saldo
     } else {
       balance = user.saldo
     }
