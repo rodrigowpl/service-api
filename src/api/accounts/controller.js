@@ -113,29 +113,17 @@ module.exports = {
   },
 
   getUsers: async (req, res) => {
-    const { userId } = req.params
-
-    const user = await User.findOne({
-      where: { id: userId }
-    })
+    const { accountId } = req.params
 
     const account = await Account.findOne({
-      where: { id: user.accountId },
+      where: { id: accountId },
       include: [{
         model: User,
+        attributes: ['id', 'codigo', 'nome', 'cpf', 'placa', 'usuario'],
         as: 'users'
       }]
     })
 
-    const response = account.users.map(user => ({
-      id: user.id,
-      numero: user.codigo,
-      nome: user.nome,
-      cpf: user.cpf,
-      placa: user.placa,
-      usuario: user.usuario
-    }))
-
-    res.send(response)
+    res.send(account.users)
   }
 }

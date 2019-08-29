@@ -63,6 +63,48 @@ module.exports = {
     res.send(user)
   },
 
+  delete: async (req, res) => {
+    const { userId } = req.params
+
+    const user = await User.findOne({
+      where: { id: userId }
+    })
+
+    await user.destroy()
+
+    res.send('Removido com sucesso.')
+  },
+
+  update: async (req, res) => {
+    const { userId } = req.params
+    const { nome, email, senha, cpf, placa } = req.body
+
+    const user = await User.findOne({
+      where: { id: userId }
+    })
+
+    const passwordEncrypted = await bcrypt.hash(senha, 12)
+    const userUpdated = await user.update({
+      nome,
+      usuario: email,
+      email,
+      senha: passwordEncrypted,
+      cpf,
+      placa
+    })
+
+    const response = {
+      id: userUpdated.id,
+      codigo: userUpdated.codigo,
+      nome: userUpdated.nome,
+      cpf: userUpdated.cpf,
+      placa: userUpdated.placa,
+      usuario: userUpdated.usuario
+    }
+
+    res.send(response)
+  },
+
   getBalance: async (req, res) => {
     const userId = req.params.userId
 
