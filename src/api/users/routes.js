@@ -9,6 +9,6 @@ router.post('/login', UserController.login)
 router.post('/', UserController.create)
 router.get('/:userId/saldo', UserController.getBalance)
 router.get('/:userId/historico', UserController.getSupplyHistory)
-router.get('/postos/:userId', GasStationController.getAllByUserAccount)
+router.get('/:userId/postos', GasStationController.getAllByUserAccount)
 
 module.exports = router
