@@ -1,6 +1,9 @@
 const bcrypt = require('bcrypt')
+const R = require('ramda')
 
-const { Account, GasStation } = require('../models')
+const { Account, GasStation, User, Supply } = require('../models')
+
+const { SUPPLY_STATUS } = require('../supplies/supply-status')
 
 const { generateJWTToken } = require('../../helpers/token')
 
@@ -80,4 +83,59 @@ module.exports = {
 
     res.send(response)
   },
+
+
+  getTotalBiling: async (req, res) => {
+    const { userId } = req.params
+
+    const user = await User.findOne({
+      where: { id: userId }
+    })
+
+    const { gasStation } = await Account.findOne({
+      where: { id: user.accountId },
+      include: [GasStation]
+    })
+
+    const supplies = await Supply.findAll({
+      where: {
+        gasStationId: gasStation.id,
+        status: SUPPLY_STATUS.CONCLUDED
+      }
+    })
+
+    const values = supplies.map(({ valor }) => valor)
+    const biling = R.sum(values).toFixed(2)
+
+    res.send({
+      faturamento: biling
+    })
+  },
+
+  getUsers: async (req, res) => {
+    const { userId } = req.params
+
+    const user = await User.findOne({
+      where: { id: userId }
+    })
+
+    const account = await Account.findOne({
+      where: { id: user.accountId },
+      include: [{
+        model: User,
+        as: 'users'
+      }]
+    })
+
+    const response = account.users.map(user => ({
+      id: user.id,
+      numero: user.codigo,
+      nome: user.nome,
+      cpf: user.cpf,
+      placa: user.placa,
+      usuario: user.usuario
+    }))
+
+    res.send(response)
+  }
 }

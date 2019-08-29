@@ -52,6 +52,7 @@ module.exports = {
     const user = await User.create({
       codigo: generatePinCode(8),
       nome,
+      usuario: email,
       email,
       senha: passwordEncrypted,
       cpf,

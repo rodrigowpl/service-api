@@ -9,5 +9,7 @@ router.post('/login', AccountController.login)
 router.post('/', AccountController.create)
 router.post('/habilitarPostos', GasStationAccountController.enableOrDisable)
 router.get('/:accountId/postos', AccountController.getAllGasStations)
+router.get('/:userId/faturamento', AccountController.getTotalBiling)
+router.get('/:userId/usuarios', AccountController.getUsers)
 
 module.exports = router
