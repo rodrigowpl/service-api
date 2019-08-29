@@ -8,6 +8,6 @@ const router = express.Router()
 router.post('/login', AccountController.login)
 router.post('/', AccountController.create)
 router.post('/habilitarPostos', GasStationAccountController.enableOrDisable)
-router.get('/postos/:accountId', AccountController.getAllGasStations)
+router.get('/:accountId/postos', AccountController.getAllGasStations)
 
 module.exports = router
