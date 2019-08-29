@@ -130,7 +130,7 @@ module.exports = {
     res.send(account.users)
   },
 
-  getSupplies: async (req, res) => {
+  getAllSupplies: async (req, res) => {
     const { accountId } = req.params
 
     const account = await Account.findOne({
