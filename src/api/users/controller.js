@@ -5,12 +5,12 @@ const { User, Company, GasStation, Supply } = require('../models')
 const { SUPPLY_STATUS } = require('../supplies/supply-status')
 
 const { humanizeDateTime } = require('../../helpers/date')
-const { generateJWTToken } = require('../../helpers/token')
+const { generateJWTToken, generatePinCode } = require('../../helpers/token')
 
 const { BALANCE_TYPE } = require('./balance-type')
 
 module.exports = {
-  login: async (req, res, next) => {
+  login: async (req, res) => {
     const { email, senha } = req.body
     const user = await User.findOne({
       where: { email }
@@ -22,7 +22,7 @@ module.exports = {
         result: 'Usuário inválido'
       })
 
-      return next()
+      return
     }
 
     const isValidPassword = await bcrypt.compare(senha, user.senha)
@@ -32,11 +32,10 @@ module.exports = {
         result: 'Senha inválida'
       })
 
-      return next()
+      return
     }
 
     const token = generateJWTToken(email)
-
     const response = {
       id: user.id,
       nome: user.nome,
@@ -46,22 +45,21 @@ module.exports = {
     res.send(response)
   },
 
-  create: async (user) => {
-    const passwordEncrypted = await bcrypt.hash(user.senha, 12)
+  create: async (req, res) => {
+    const { nome, email, senha, cpf, placa, idConta } = req.body
 
-    const gasola = await Company.findOne({
-      where: {
-        nome: 'Gasola'
-      }
+    const passwordEncrypted = await bcrypt.hash(senha, 12)
+    const user = await User.create({
+      codigo: generatePinCode(8),
+      nome,
+      email,
+      senha: passwordEncrypted,
+      cpf,
+      placa,
+      accountId: idConta
     })
 
-    const userCreated = await User.create({
-      ...user,
-      companyId: gasola.id,
-      senha: passwordEncrypted
-    })
-
-    return userCreated
+    res.send(user)
   },
 
   getBalance: async (req, res) => {

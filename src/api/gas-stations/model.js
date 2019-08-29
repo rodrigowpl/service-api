@@ -10,6 +10,24 @@ module.exports = sequelize => (
     nome: {
       type: DataTypes.STRING
     },
+    cidade: {
+      type: DataTypes.STRING
+    },
+    bairro: {
+      type: DataTypes.STRING
+    },
+    cnpj: {
+      type: DataTypes.STRING
+    },
+    banco: {
+      type: DataTypes.STRING
+    },
+    agencia: {
+      type: DataTypes.STRING
+    },
+    conta: {
+      type: DataTypes.STRING
+    },
     logradouro: {
       type: DataTypes.STRING
     },

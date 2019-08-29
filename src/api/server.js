@@ -4,6 +4,7 @@ const cors = require('cors')
 
 const { SERVER_PORT } = require('../config/settings')
 
+const accountRoutes = require('./accounts/routes')
 const usersRoutes = require('./users/routes')
 const gastStationRoutes = require('./gas-stations/routes')
 const companyRoutes = require('./companies/routes')
@@ -31,6 +32,7 @@ app.get('/v1/usuarios', (req, res) => {
   res.send('Hello World!')
 })
 
+app.use('/v1/contas', accountRoutes)
 app.use('/v1/usuarios', usersRoutes)
 app.use('/v1/postos', gastStationRoutes)
 app.use('/v1/empresas', companyRoutes)

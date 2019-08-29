@@ -10,21 +10,31 @@ module.exports = sequelize => (
       primaryKey: true,
       defaultValue: DataTypes.UUIDV1
     },
+    codigo: {
+      type: DataTypes.STRING
+    },
     nome: {
       type: DataTypes.STRING
     },
     email: {
       type: DataTypes.STRING
     },
+    usuario: {
+      type: DataTypes.STRING
+    },
     senha: {
       type: DataTypes.STRING
     },
-    telefone: {
+    cpf: {
       type: DataTypes.STRING
     },
-    perfil: {
+    placa: {
       type: DataTypes.STRING,
-      defaultValue: 'motorista'
+      allowNull: true
+    },
+    telefone: {
+      type: DataTypes.STRING,
+      allowNull: true
     },
     tipoConta: {
       type: DataTypes.STRING,

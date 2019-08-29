@@ -1,22 +1,32 @@
-const { Company, User, GasStation, GasStationCompany } = require('../models')
+const { User, GasStation, Account } = require('../models')
 
 const { formatHour } = require('../../helpers/date')
 
 module.exports = {
-  getAll: async (req, res) => {
-    const userId = req.params.userId
-    const { company } = await User.findOne({
-      where: { id: userId },
-      include: {
-        model: Company,
-        include: [{
-          model: GasStation,
-          as: 'gasStations'
-        }]
-      }
+  getAll: async (_, res) => {
+    const gasStations = await GasStation.findAll({
+      attributes: ['id', 'nome']
     })
 
-    const gasStations = company.gasStations.map(gasStation => ({
+    res.send(gasStations)
+  },
+
+  getAllByUserAccount: async (req, res) => {
+    const userId = req.params.userId
+
+    const user = await User.findOne({
+      where: { id: userId }
+    })
+
+    const { gasStations } = await Account.findOne({
+      where: { id: user.accountId },
+      include: [{
+        model: GasStation,
+        as: 'gasStations'
+      }]
+    })
+
+    const response = gasStations.map(gasStation => ({
       id: gasStation.id,
       nome: gasStation.nome,
       bandeira: gasStation.bandeira,
@@ -35,33 +45,11 @@ module.exports = {
       horarioAtendimentoFim: formatHour(gasStation.horarioAtendimentoFim)
     }))
 
-    res.send(gasStations)
+    res.send(response)
   },
 
   create: async (req, res) => {
     const gasStation = await GasStation.create(req.body)
     res.send(gasStation)
-  },
-
-  enable: async (req, res) => {
-    const { postoId, empresaId } = req.body
-    await GasStationCompany.create({
-      gasStationId: postoId,
-      companyId: empresaId
-    })
-
-    res.send('Habilitado com sucesso!')
-  },
-
-  disable: async (req, res) => {
-    const { postoId, empresaId } = req.body
-    await GasStationCompany.destroy({
-      where: {
-        gasStationId: postoId,
-        companyId: empresaId
-      }
-    })
-
-    res.send('Desabilitado com sucesso!')
   }
 }
