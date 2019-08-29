@@ -1,10 +1,9 @@
 const { Op } = require('sequelize')
-const { startOfDay, endOfDay, addDays } = require('date-fns')
+const { addDays } = require('date-fns')
 
 const { Supply, GasStation, User, Account } = require('../models')
 
 const { fixedNumberTwoDecimals } = require('../../helpers/number')
-const { humanizeDateTime, formatHour } = require('../../helpers/date')
 const { generateRandomToken, generatePinCode } = require('../../helpers/token')
 
 const { SUPPLY_STATUS } = require('../supplies/supply-status')
@@ -15,48 +14,6 @@ const { BALANCE_TYPE } = require('../users/balance-type')
 const ConfigurationController = require('../configurations/controller')
 
 module.exports = {
-  getAll: async (req, res) => {
-    const { userId } = req.params
-
-    const pendentSupplies = await Supply.findAll({
-      where: {
-        userId,
-        status: SUPPLY_STATUS.PENDENT,
-        createdAt: {
-          [Op.between]: [startOfDay(new Date()), endOfDay(new Date())]
-        },
-      },
-      order: [['created_at', 'DESC']]
-    })
-
-    const concludedSupplies = await Supply.findAll({
-      where: {
-        userId,
-        status: SUPPLY_STATUS.CONCLUDED,
-        dataConclusao: {
-          [Op.between]: [startOfDay(new Date()), endOfDay(new Date())]
-        },
-      },
-      order: [['data_conclusao', 'DESC']]
-    })
-
-    const normalize = (type, data) => data.map(item => ({
-      id: item.id,
-      placa: item.placa,
-      valor: item.valor,
-      combustivel: item.combustivel,
-      dataRealizado: type === 'concluded' ? humanizeDateTime(item.dataConclusao) : formatHour(item.createdAt),
-      token: item.token
-    }))
-
-    const response = {
-      emAndamento: normalize('pendent', pendentSupplies),
-      concluido: normalize('concluded', concludedSupplies)
-    }
-
-    res.send(response)
-  },
-
   create: async (req, res) => {
     const { idUsuario, idPosto, valor, combustivel, km, placa } = req.body
 

@@ -16,6 +16,7 @@ Supply.belongsTo(User)
 Supply.belongsTo(GasStation)
 
 User.belongsTo(Account)
+User.hasMany(Supply, { as: 'supplies' })
 
 Account.belongsTo(Company)
 Account.belongsTo(GasStation)

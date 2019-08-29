@@ -1,11 +1,14 @@
+const { Op } = require('sequelize')
 const bcrypt = require('bcrypt')
 const R = require('ramda')
+const { startOfDay, endOfDay } = require('date-fns')
 
 const { Account, GasStation, User, Supply } = require('../models')
 
 const { SUPPLY_STATUS } = require('../supplies/supply-status')
 
 const { generateJWTToken } = require('../../helpers/token')
+const { humanizeDateTime, formatHour } = require('../../helpers/date')
 
 const gasStationAccountController = require('../gas-stations-accounts/controller')
 
@@ -125,5 +128,72 @@ module.exports = {
     })
 
     res.send(account.users)
+  },
+
+  getSupplies: async (req, res) => {
+    const { accountId } = req.params
+
+    const account = await Account.findOne({
+      where: { id: accountId },
+      include: [{
+        model: User,
+        as: 'users',
+        attributes: ['id']
+      }]
+    })
+
+    const allUserSupplies = await Promise.all(
+      account.users.map(async ({ id: userId }) => {
+        const pendentSupplies = await Supply.findAll({
+          where: {
+            userId,
+            status: SUPPLY_STATUS.PENDENT,
+            createdAt: {
+              [Op.between]: [startOfDay(new Date()), endOfDay(new Date())]
+            },
+          },
+          order: [['created_at', 'DESC']]
+        })
+
+        const concludedSupplies = await Supply.findAll({
+          where: {
+            userId,
+            status: SUPPLY_STATUS.CONCLUDED,
+            dataConclusao: {
+              [Op.between]: [startOfDay(new Date()), endOfDay(new Date())]
+            },
+          },
+          order: [['data_conclusao', 'DESC']]
+        })
+
+        const normalize = (type, data) => data.map(item => ({
+          id: item.id,
+          placa: item.placa,
+          valor: item.valor,
+          combustivel: item.combustivel,
+          dataRealizado: type === 'concluded' ? humanizeDateTime(item.dataConclusao) : formatHour(item.createdAt),
+          token: item.token
+        }))
+
+        return {
+          emAndamento: normalize('pendent', pendentSupplies),
+          concluido: normalize('concluded', concludedSupplies)
+        }
+      })
+    )
+
+    const response = allUserSupplies.reduce((acc, curr) => {
+      const onGoing = acc.emAndamento || []
+      const concluded = acc.concluido || []
+
+      const item = {
+        emAndamento: onGoing.concat(curr.emAndamento),
+        concluido: concluded.concat(curr.concluido)
+      }
+
+      return item
+    }, {})
+
+    res.send(response)
   }
 }

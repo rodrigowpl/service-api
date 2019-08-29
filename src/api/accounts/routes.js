@@ -11,5 +11,6 @@ router.post('/habilitarPostos', GasStationAccountController.enableOrDisable)
 router.get('/:accountId/postos', AccountController.getAllGasStations)
 router.get('/:userId/faturamento', AccountController.getTotalBiling)
 router.get('/:accountId/usuarios', AccountController.getUsers)
+router.get('/:accountId/abastecimentos', AccountController.getSupplies)
 
 module.exports = router
