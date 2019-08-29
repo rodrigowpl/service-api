@@ -1,4 +1,4 @@
-const { Supply, User, Company } = require('../models')
+const { Supply, Account, Company, User } = require('../models')
 
 const { SUPPLY_STATUS } = require('../supplies/supply-status')
 
@@ -11,6 +11,7 @@ const ConfigurationController = require('../configurations/controller')
 module.exports = {
   getAllSupplies: async (req, res) => {
     const {
+      idConta,
       dataDe,
       dataAte,
       valorDe,
@@ -22,8 +23,13 @@ module.exports = {
       pageSize
     } = req.query
 
+    const account = await Account.findOne({
+      where: { id: idConta }
+    })
+
     let where = {
-      status: SUPPLY_STATUS.CONCLUDED
+      status: SUPPLY_STATUS.CONCLUDED,
+      gasStationId: account.gasStationId
     }
 
     if (dataDe || dataAte) {
@@ -58,19 +64,19 @@ module.exports = {
     const { count, rows: supplies } = await Supply.findAndCountAll({
       where,
       order: [['data_conclusao', 'DESC']],
+      include: [User],
       ...buildPaginatedQuery({ page, pageSize })
+    })
+
+    const company = await Company.findOne({
+      where: { id: account.companyId }
     })
 
     const reportSupplies = await Promise.all(
       supplies.map(async supply => {
-        const user = await User.findOne({
-          where: { id: supply.userId },
-          include: [Company]
-        })
-
         const configuration = await ConfigurationController.getConfiguration({
           fuelType: supply.combustivel,
-          companyId: user.company.id,
+          companyId: company.id,
           gasStationId: supply.gasStationId
         })
 
@@ -91,13 +97,13 @@ module.exports = {
           hora: formatHour(supply.dataConclusao),
           valor: `R$${supply.valor}`,
           combustivel: supply.combustivel,
-          empresa: user.company.nome,
+          empresa: company.nome,
           taxaGasola: `${configuration.taxaGasola}%`,
           valorReceber: `R$${taxedValue}`,
           totalLitros: supply.totalLitros,
           prazoPagamento: `${configuration.prazoPagamentoGasola} dias úteis`,
           dataPagamento: formatDate(supply.dataPagamento),
-          usuario: user.nome
+          usuario: supply.user.nome
         }
       })
     )
