@@ -131,11 +131,12 @@ module.exports = {
     const { userId } = req.params
 
     const concludedSupplies = await Supply.findAll({
+      include: [GasStation],
       where: {
         userId,
-        status: SUPPLY_STATUS.CONCLUDED
+        status: SUPPLY_STATUS.CONCLUDED,
       },
-      include: [GasStation]
+      order: [['data_conclusao', 'DESC']]
     })
 
     const history = concludedSupplies.map(({ gasStation, combustivel, totalLitros, totalCreditos, dataConclusao, valor }) => {
@@ -144,7 +145,7 @@ module.exports = {
         bandeira: gasStation.bandeira,
         logradouro: gasStation.logradouro,
         data: humanizeDateTime(dataConclusao),
-        combustivel,
+        combustivel: combustivel.toUpperCase(),
         totalLitros,
         valorAbastecimento: valor,
         valorEmCreditos: totalCreditos
