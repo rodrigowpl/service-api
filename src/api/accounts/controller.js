@@ -113,17 +113,43 @@ module.exports = {
 
   getUsers: async (req, res) => {
     const { accountId } = req.params
+    const { nome, cpf, placa } = req.query
 
-    const account = await Account.findOne({
-      where: { id: accountId },
-      include: [{
-        model: User,
-        attributes: ['id', 'codigo', 'nome', 'cpf', 'placa', 'usuario'],
-        as: 'users'
-      }]
+    let where = { accountId }
+
+    if (nome) {
+      where = {
+        ...where,
+        nome: {
+          [Op.like]: `%${nome}%`
+        }
+      }
+    }
+
+    if (cpf) {
+      where = {
+        ...where,
+        cpf: {
+          [Op.like]: `%${cpf}%`
+        }
+      }
+    }
+
+    if (placa) {
+      where = {
+        ...where,
+        placa: {
+          [Op.like]: `%${placa.toUpperCase()}%`
+        }
+      }
+    }
+
+    const users = await User.findAll({
+      where,
+      attributes: ['id', 'codigo', 'nome', 'cpf', 'placa', 'usuario']
     })
 
-    res.send(account.users)
+    res.send(users)
   },
 
   getAllSupplies: async (req, res) => {
