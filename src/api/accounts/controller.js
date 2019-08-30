@@ -154,7 +154,7 @@ module.exports = {
       where = {
         ...where,
         nome: {
-          [Op.like]: `%${nome}%`
+          [Op.iLike]: `%${nome}%`
         }
       }
     }
@@ -163,7 +163,7 @@ module.exports = {
       where = {
         ...where,
         cpf: {
-          [Op.like]: `%${cpf}%`
+          [Op.iLike]: `%${cpf}%`
         }
       }
     }
@@ -172,7 +172,7 @@ module.exports = {
       where = {
         ...where,
         placa: {
-          [Op.like]: `%${placa.toUpperCase()}%`
+          [Op.iLike]: `%${placa}%`
         }
       }
     }
