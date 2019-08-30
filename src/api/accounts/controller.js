@@ -89,14 +89,10 @@ module.exports = {
 
 
   getTotalBiling: async (req, res) => {
-    const { userId } = req.params
-
-    const user = await User.findOne({
-      where: { id: userId }
-    })
+    const { accountId } = req.params
 
     const { gasStation } = await Account.findOne({
-      where: { id: user.accountId },
+      where: { id: accountId },
       include: [GasStation]
     })
 
