@@ -145,7 +145,7 @@ module.exports = {
         bandeira: gasStation.bandeira,
         logradouro: gasStation.logradouro,
         data: humanizeDateTime(dataConclusao),
-        combustivel: combustivel.toUpperCase(),
+        combustivel,
         totalLitros,
         valorAbastecimento: valor,
         valorEmCreditos: totalCreditos
