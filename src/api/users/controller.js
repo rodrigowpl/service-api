@@ -83,12 +83,16 @@ module.exports = {
       where: { id: userId }
     })
 
-    const passwordEncrypted = await bcrypt.hash(senha, 12)
+    let passwordEncrypted
+    if (senha) {
+      passwordEncrypted = await bcrypt.hash(senha, 12)
+    }
+
     const userUpdated = await user.update({
       nome,
       usuario: email,
       email,
-      senha: passwordEncrypted,
+      senha: passwordEncrypted || user.senha,
       cpf,
       placa
     })
