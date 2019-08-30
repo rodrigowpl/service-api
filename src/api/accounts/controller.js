@@ -64,7 +64,38 @@ module.exports = {
 
   getAllGasStations: async (req, res) => {
     const { accountId } = req.params
-    const gasStations = await GasStation.findAll()
+    const { bandeira, cidade, bairro } = req.query
+
+    let where = {}
+
+    if (bandeira) {
+      where = {
+        ...where,
+        bandeira
+      }
+    }
+
+    if (cidade) {
+      where = {
+        ...where,
+        cidade: {
+          [Op.iLike]: `%${cidade}%`
+        }
+      }
+    }
+
+    if (bairro) {
+      where = {
+        ...where,
+        bairro: {
+          [Op.iLike]: `%${bairro}%`
+        }
+      }
+    }
+
+    const gasStations = await GasStation.findAll({
+      where
+    })
 
     const response = await Promise.all(
       gasStations.map(async (gasStation) => {
@@ -79,7 +110,9 @@ module.exports = {
           diesel: gasStation.diesel,
           ganhoDiesel: gasStation.ganhoDiesel,
           etanol: gasStation.etanol,
-          ganhoEtanol: gasStation.ganhoEtanol
+          ganhoEtanol: gasStation.ganhoEtanol,
+          latitude: gasStation.latitude,
+          longitude: gasStation.longitude
         }
       })
     )
