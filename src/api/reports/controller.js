@@ -101,7 +101,7 @@ module.exports = {
           taxaGasola: `${configuration.taxaGasola}%`,
           valorReceber: `R$${taxedValue}`,
           totalLitros: supply.totalLitros,
-          prazoPagamento: `${configuration.prazoPagamentoGasola} dias úteis`,
+          prazoPagamento: `${configuration.prazoPagamentoGasola} dias`,
           dataPagamento: formatDate(supply.dataPagamento),
           usuario: supply.user.nome
         }
