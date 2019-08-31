@@ -197,11 +197,14 @@ module.exports = {
     })
   },
 
-  getUsers: async (req, res) => {
+  getAllUsers: async (req, res) => {
     const { accountId } = req.params
     const { nome, cpf, placa } = req.query
 
-    let where = { accountId }
+    let where = {
+      accountId,
+      ativado: ACTIVED
+    }
 
     if (nome) {
       where = {

@@ -7,6 +7,7 @@ const { SUPPLY_STATUS } = require('../supplies/supply-status')
 
 const { humanizeDateTime } = require('../../helpers/date')
 const { generateJWTToken, generatePinCode } = require('../../helpers/token')
+const { ACTIVED, DEACTIVED } = require('../../helpers/constants')
 
 const { BALANCE_TYPE } = require('./balance-type')
 
@@ -14,7 +15,10 @@ module.exports = {
   login: async (req, res) => {
     const { email, senha } = req.body
     const user = await User.findOne({
-      where: { email }
+      where: {
+        email,
+        ativado: ACTIVED
+      }
     })
 
     if (!user) {
@@ -65,18 +69,6 @@ module.exports = {
     res.send(user)
   },
 
-  delete: async (req, res) => {
-    const { userId } = req.params
-
-    const user = await User.findOne({
-      where: { id: userId }
-    })
-
-    await user.destroy()
-
-    res.send('Removido com sucesso.')
-  },
-
   update: async (req, res) => {
     const { userId } = req.params
     const { nome, email, senha, cpf, placa } = req.body
@@ -109,6 +101,18 @@ module.exports = {
     }
 
     res.send(response)
+  },
+
+  delete: async (req, res) => {
+    const { userId } = req.params
+
+    await User.update({
+      ativado: DEACTIVED
+    }, {
+      where: { id: userId }
+    })
+
+    res.send('Removido com sucesso.')
   },
 
   getBalance: async (req, res) => {

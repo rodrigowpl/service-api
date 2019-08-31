@@ -3,6 +3,8 @@ const { DataTypes } = require('sequelize')
 const { ACCOUNT_TYPE } = require('./account-type')
 const { BALANCE_TYPE } = require('./balance-type')
 
+const { ACTIVED } = require('../../helpers/constants')
+
 module.exports = sequelize => (
   sequelize.define('user', {
     id: {
@@ -42,7 +44,7 @@ module.exports = sequelize => (
     },
     ativado: {
       type: DataTypes.INTEGER,
-      defaultValue: 1
+      defaultValue: ACTIVED
     },
     saldo: {
       type: DataTypes.DOUBLE,
