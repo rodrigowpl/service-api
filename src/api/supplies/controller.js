@@ -143,7 +143,10 @@ module.exports = {
     })
 
     if (!supply) {
-      res.send('Abastecimento não existente ou já foi confirmado.')
+      res.status(422).send({
+        code: 422,
+        result: 'Abastecimento já foi confirmado ou não existe'
+      })
       return
     }
 
