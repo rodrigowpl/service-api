@@ -41,6 +41,7 @@ module.exports = {
       id: user.id,
       nome: user.nome,
       tipoConta: user.tipoConta,
+      placa: user.placa,
       token
     }
     res.send(response)
