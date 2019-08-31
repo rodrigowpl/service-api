@@ -1,7 +1,7 @@
 module.exports = {
   FUEL_TYPE: {
-    GASOLINE: 'Gasolina',
-    ETHANOL: 'Etanol',
-    DIESEL: 'Diesel'
+    GASOLINE: 'gasolina',
+    ETHANOL: 'etanol',
+    DIESEL: 'diesel'
   }
 }
