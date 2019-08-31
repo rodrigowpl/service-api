@@ -294,16 +294,16 @@ module.exports = {
     )
 
     const response = allUserSupplies.reduce((acc, curr) => {
-      const onGoing = acc.emAndamento || []
-      const concluded = acc.concluido || []
-
       const item = {
-        emAndamento: onGoing.concat(curr.emAndamento),
-        concluido: concluded.concat(curr.concluido)
+        emAndamento: acc.emAndamento.concat(curr.emAndamento),
+        concluido: acc.concluido.concat(curr.concluido)
       }
 
       return item
-    }, {})
+    }, {
+      emAndamento: [],
+      concluido: []
+    })
 
     res.send(response)
   }
