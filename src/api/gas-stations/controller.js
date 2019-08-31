@@ -31,7 +31,7 @@ module.exports = {
   getAll: async (_, res) => {
     const gasStations = await GasStation.findAll({
       where: {
-        ativo: ACTIVED
+        ativado: ACTIVED
       }
     })
 
@@ -53,7 +53,7 @@ module.exports = {
         model: GasStation,
         as: 'gasStations',
         where: {
-          ativo: ACTIVED
+          ativado: ACTIVED
         },
         required: true
       }]
@@ -87,7 +87,7 @@ module.exports = {
     const { gasStationId } = req.params
 
     await GasStation.update({
-      ativo: DEACTIVED
+      ativado: DEACTIVED
     }, {
       where: { id: gasStationId }
     })

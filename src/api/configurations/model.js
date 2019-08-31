@@ -25,7 +25,7 @@ module.exports = sequelize => (
     desconto: {
       type: DataTypes.DOUBLE
     },
-    ativo: {
+    ativado: {
       type: DataTypes.INTEGER,
       defaultValue: 1
     }

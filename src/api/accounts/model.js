@@ -1,5 +1,7 @@
 const { DataTypes } = require('sequelize')
 
+const { ACTIVED } = require('../../helpers/constants')
+
 module.exports = sequelize => (
   sequelize.define('account', {
     id: {
@@ -32,6 +34,10 @@ module.exports = sequelize => (
     },
     conta: {
       type: DataTypes.STRING
+    },
+    ativado: {
+      type: DataTypes.INTEGER,
+      defaultValue: ACTIVED
     }
   }, {
     tableName: 'account'

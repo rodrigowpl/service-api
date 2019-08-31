@@ -1,5 +1,7 @@
 const { DataTypes } = require('sequelize')
 
+const { ACTIVED } = require('../../helpers/constants')
+
 module.exports = sequelize => (
   sequelize.define('gasStation', {
     id: {
@@ -64,9 +66,9 @@ module.exports = sequelize => (
     ganhoEtanol: {
       type: DataTypes.DOUBLE
     },
-    ativo: {
+    ativado: {
       type: DataTypes.INTEGER,
-      defaultValue: 1
+      defaultValue: ACTIVED
     }
   }, {
     tableName: 'gas_station'

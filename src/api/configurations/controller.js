@@ -77,7 +77,7 @@ module.exports = {
     const { configurationId } = req.params
 
     await Configuration.update({
-      ativo: DEACTIVED
+      ativado: DEACTIVED
     }, {
       where: { id: configurationId }
     })
@@ -89,7 +89,7 @@ module.exports = {
     const configurations = await Configuration.findAll({
       include: [Company, GasStation],
       where: {
-        ativo: ACTIVED
+        ativado: ACTIVED
       }
     })
 
@@ -104,7 +104,7 @@ module.exports = {
         combustivel: fuelType,
         companyId,
         gasStationId,
-        ativo: ACTIVED
+        ativado: ACTIVED
       }
     })
 

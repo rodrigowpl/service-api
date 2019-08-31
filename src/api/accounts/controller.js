@@ -9,10 +9,78 @@ const { SUPPLY_STATUS } = require('../supplies/supply-status')
 
 const { generateJWTToken } = require('../../helpers/token')
 const { humanizeDateTime, formatHour } = require('../../helpers/date')
+const { ACTIVED, DEACTIVED } = require('../../helpers/constants')
 
 const gasStationAccountController = require('../gas-stations-accounts/controller')
 
 module.exports = {
+  getAll: async (req, res) => {
+    const accounts = await Account.findAll({
+      where: {
+        ativado: ACTIVED
+      }
+    })
+
+    res.send(accounts)
+  },
+
+  create: async (req, res) => {
+    const { nome, email, senha, saldo, banco, agencia, conta, idEmpresa, idPosto } = req.body
+    const passwordEncrypted = await bcrypt.hash(senha, 12)
+
+    const account = await Account.create({
+      nome,
+      email,
+      saldo,
+      banco,
+      agencia,
+      conta,
+      senha: passwordEncrypted,
+      companyId: idEmpresa,
+      gasStationId: idPosto
+    })
+
+    res.send(account)
+  },
+
+  update: async (req, res) => {
+    const { accountId } = req.params
+    const { nome, email, saldo, banco, agencia, conta, idEmpresa, idPosto } = req.body
+
+    const account = await Account.findOne({
+      where: {
+        id: accountId
+      }
+    })
+
+    const accountUpdated = await account.update({
+      nome,
+      email,
+      saldo,
+      banco,
+      agencia,
+      conta,
+      companyId: idEmpresa,
+      gasStationId: idPosto
+    })
+
+    res.send(accountUpdated)
+  },
+
+  delete: async (req, res) => {
+    const { accountId } = req.params
+
+    await Account.update({
+      ativado: DEACTIVED
+    }, {
+      where: {
+        id: accountId
+      }
+    })
+
+    res.send('Desativado com sucesso')
+  },
+
   login: async (req, res) => {
     const { email, senha } = req.body
     const account = await Account.findOne({
@@ -45,21 +113,6 @@ module.exports = {
       token
     }
     res.send(response)
-  },
-
-  create: async (req, res) => {
-    const { nome, email, senha, idEmpresa, idPosto } = req.body
-    const passwordEncrypted = await bcrypt.hash(senha, 12)
-
-    const account = await Account.create({
-      nome,
-      email,
-      senha: passwordEncrypted,
-      companyId: idEmpresa,
-      gasStationId: idPosto
-    })
-
-    res.send(account)
   },
 
   getAllGasStations: async (req, res) => {
