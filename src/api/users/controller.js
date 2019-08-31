@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt')
+const camelCase = require('camelcase')
 
 const { User, Account, GasStation, Supply } = require('../models')
 
@@ -145,7 +146,7 @@ module.exports = {
         bandeira: gasStation.bandeira,
         logradouro: gasStation.logradouro,
         data: humanizeDateTime(dataConclusao),
-        combustivel,
+        combustivel: camelCase(combustivel, { pascalCase: true }),
         totalLitros,
         valorAbastecimento: valor,
         valorEmCreditos: totalCreditos
