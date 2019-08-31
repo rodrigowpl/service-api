@@ -24,6 +24,10 @@ module.exports = sequelize => (
     },
     desconto: {
       type: DataTypes.DOUBLE
+    },
+    ativo: {
+      type: DataTypes.INTEGER,
+      defaultValue: 1
     }
   }, {
     tableName: 'configuration'

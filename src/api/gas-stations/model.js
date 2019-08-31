@@ -63,6 +63,10 @@ module.exports = sequelize => (
     },
     ganhoEtanol: {
       type: DataTypes.DOUBLE
+    },
+    ativo: {
+      type: DataTypes.INTEGER,
+      defaultValue: 1
     }
   }, {
     tableName: 'gas_station'

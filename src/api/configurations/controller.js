@@ -1,5 +1,7 @@
 const { Configuration, Company, GasStation } = require('../models')
 
+const { ACTIVED, DEACTIVED } = require('../../helpers/constants')
+
 const normalizeResponse = (configuration) => ({
   id: configuration.id,
   combustivel: configuration.combustivel,
@@ -74,7 +76,9 @@ module.exports = {
   delete: async (req, res) => {
     const { configurationId } = req.params
 
-    await Configuration.destroy({
+    await Configuration.update({
+      ativo: DEACTIVED
+    }, {
       where: { id: configurationId }
     })
 
@@ -83,12 +87,13 @@ module.exports = {
 
   getAll: async (_, res) => {
     const configurations = await Configuration.findAll({
-      include: [Company, GasStation]
+      include: [Company, GasStation],
+      where: {
+        ativo: ACTIVED
+      }
     })
 
-    const normalizedResponse = configurations.map(configuration => (
-      normalizeResponse(configuration)
-    ))
+    const normalizedResponse = configurations.map(normalizeResponse)
 
     res.send(normalizedResponse)
   },
@@ -98,7 +103,8 @@ module.exports = {
       where: {
         combustivel: fuelType,
         companyId,
-        gasStationId
+        gasStationId,
+        ativo: ACTIVED
       }
     })
 
