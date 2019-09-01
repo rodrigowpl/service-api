@@ -93,17 +93,7 @@ module.exports = {
     const { email, senha } = req.body
 
     const user = await User.findOne({
-      attributes: [
-        'id',
-        'codigo',
-        'nome',
-        'cpf',
-        'placa',
-        'usuario',
-        'saldo',
-        'limiteGastoDiario',
-        'limiteGastoMensal'
-      ],
+      attributes: DEFAULT_ATTRIBUTES,
       where: { id: userId }
     })
 
@@ -118,7 +108,7 @@ module.exports = {
       senha: passwordEncrypted || user.senha
     })
 
-    res.send(userUpdated)
+    res.send(normalizeResponse(userUpdated))
   },
 
   updateAll: async (req, res) => {
