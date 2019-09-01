@@ -10,6 +10,8 @@ module.exports = {
   calcPercentage: (value, percent) => (value * percent) / 100,
 
   getCurrencyFormattedByCents: (value) => {
+    if (!value) return '0'
+
     const real = numeral(value).divide(100)
     return formatCurrency(real)
   },
