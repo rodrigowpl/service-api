@@ -257,7 +257,9 @@ module.exports = {
     })
 
     const allUsersValues = account.users.map(({ saldo }) => saldo)
-    const totalUsersBudget = R.sum(allUsersValues)
+
+    //TODO quando for alterado todos os tipos de valores pra centavos, remover a divisão por 100
+    const totalUsersBudget = R.sum(allUsersValues) / 100
 
     const accountBudget = account.saldo
     const sharedBudget = accountBudget - totalUsersBudget
