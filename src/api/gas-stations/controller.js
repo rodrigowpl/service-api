@@ -59,9 +59,7 @@ module.exports = {
       }]
     })
 
-    const response = gasStations.map(gasStation => (
-      normalizeResponse(gasStation)
-    ))
+    const response = gasStations.map(normalizeResponse)
 
     res.send(response)
   },

@@ -1,15 +1,33 @@
+const { Op } = require('sequelize')
 const bcrypt = require('bcrypt')
-const camelCase = require('camelcase')
 
-const { User, Account, GasStation, Supply } = require('../models')
+const { User, Account } = require('../models')
 
-const { SUPPLY_STATUS } = require('../supplies/supply-status')
-
-const { humanizeDateTime } = require('../../helpers/date')
 const { generateJWTToken, generatePinCode } = require('../../helpers/token')
 const { ACTIVED, DEACTIVED } = require('../../helpers/constants')
+const { getCurrencyFormattedByCents } = require('../../helpers/number')
 
 const { BALANCE_TYPE } = require('./balance-type')
+
+const DEFAULT_ATTRIBUTES = [
+  'id',
+  'codigo',
+  'nome',
+  'cpf',
+  'placa',
+  'usuario',
+  'saldo',
+  'limiteGastoDiario',
+  'limiteGastoMensal'
+]
+
+const normalizeResponse = (user) => (
+  Object.assign(user.toJSON(), {
+    saldoFormatado: getCurrencyFormattedByCents(user.saldo),
+    limiteGastoDiarioFormatado: getCurrencyFormattedByCents(user.limiteGastoDiario),
+    limiteGastoMensalFormatado: getCurrencyFormattedByCents(user.limiteGastoMensal)
+  })
+)
 
 module.exports = {
   login: async (req, res) => {
@@ -102,6 +120,29 @@ module.exports = {
     res.send(userUpdated)
   },
 
+  updateAll: async (req, res) => {
+    const users = req.body
+
+    const usersUpdated = await Promise.all(
+      users.map(async ({ id, saldo, limiteGastoMensal, limiteGastoDiario }) => {
+        const user = await User.findOne({
+          attributes: DEFAULT_ATTRIBUTES,
+          where: { id }
+        })
+
+        const userUpdated = await user.update({
+          saldo,
+          limiteGastoMensal,
+          limiteGastoDiario
+        })
+
+        return normalizeResponse(userUpdated)
+      })
+    )
+
+    res.send(usersUpdated)
+  },
+
   delete: async (req, res) => {
     const { userId } = req.params
 
@@ -132,31 +173,58 @@ module.exports = {
     return res.send({ saldo: balance })
   },
 
-  getSupplyHistory: async (req, res) => {
-    const { userId } = req.params
+  getAllByAccount: async (req, res) => {
+    const { accountId } = req.params
+    const { codigo, nome, cpf, placa } = req.query
 
-    const concludedSupplies = await Supply.findAll({
-      include: [GasStation],
-      where: {
-        userId,
-        status: SUPPLY_STATUS.CONCLUDED,
-      },
-      order: [['data_conclusao', 'DESC']]
-    })
+    let where = {
+      accountId,
+      ativado: ACTIVED
+    }
 
-    const history = concludedSupplies.map(({ gasStation, combustivel, totalLitros, totalCreditos, dataConclusao, valor }) => {
-      return {
-        nome: gasStation.nome,
-        bandeira: gasStation.bandeira,
-        logradouro: gasStation.logradouro,
-        data: humanizeDateTime(dataConclusao),
-        combustivel: camelCase(combustivel, { pascalCase: true }),
-        totalLitros,
-        valorAbastecimento: valor,
-        valorEmCreditos: totalCreditos
+    if (codigo) {
+      where = {
+        ...where,
+        codigo: {
+          [Op.iLike]: `%${codigo}%`
+        }
       }
+    }
+
+    if (nome) {
+      where = {
+        ...where,
+        nome: {
+          [Op.iLike]: `%${nome}%`
+        }
+      }
+    }
+
+    if (cpf) {
+      where = {
+        ...where,
+        cpf: {
+          [Op.iLike]: `%${cpf}%`
+        }
+      }
+    }
+
+    if (placa) {
+      where = {
+        ...where,
+        placa: {
+          [Op.iLike]: `%${placa}%`
+        }
+      }
+    }
+
+    const users = await User.findAll({
+      where,
+      attributes: DEFAULT_ATTRIBUTES
     })
 
-    res.send(history)
+    const normalized = users.map(normalizeResponse)
+
+    res.send(normalized)
   }
 }

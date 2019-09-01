@@ -39,6 +39,7 @@
     "express": "^4.17.1",
     "http-errors": "^1.7.3",
     "jsonwebtoken": "^8.5.1",
+    "numeral": "^2.0.6",
     "pg": "^7.12.1",
     "pg-hstore": "^2.3.3",
     "ramda": "^0.26.1",

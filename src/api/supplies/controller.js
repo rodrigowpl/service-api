@@ -1,17 +1,19 @@
 const { Op } = require('sequelize')
 const { addDays } = require('date-fns')
+const camelCase = require('camelcase')
 
 const { Supply, GasStation, User, Account } = require('../models')
 
 const { fixedNumberTwoDecimals } = require('../../helpers/number')
 const { generateRandomToken, generatePinCode } = require('../../helpers/token')
-
-const { SUPPLY_STATUS } = require('../supplies/supply-status')
-const { FUEL_TYPE } = require('../supplies/fuel_type')
+const { humanizeDateTime } = require('../../helpers/date')
 
 const { BALANCE_TYPE } = require('../users/balance-type')
 
 const ConfigurationController = require('../configurations/controller')
+
+const { SUPPLY_STATUS } = require('./supply-status')
+const { FUEL_TYPE } = require('./fuel_type')
 
 module.exports = {
   create: async (req, res) => {
@@ -194,5 +196,33 @@ module.exports = {
     }
 
     res.status(200).send({ isValid: true })
+  },
+
+  getSuppliesHistoryByUser: async (req, res) => {
+    const { userId } = req.params
+
+    const concludedSupplies = await Supply.findAll({
+      include: [GasStation],
+      where: {
+        userId,
+        status: SUPPLY_STATUS.CONCLUDED,
+      },
+      order: [['data_conclusao', 'DESC']]
+    })
+
+    const history = concludedSupplies.map(({ gasStation, combustivel, totalLitros, totalCreditos, dataConclusao, valor }) => {
+      return {
+        nome: gasStation.nome,
+        bandeira: gasStation.bandeira,
+        logradouro: gasStation.logradouro,
+        data: humanizeDateTime(dataConclusao),
+        combustivel: camelCase(combustivel, { pascalCase: true }),
+        totalLitros,
+        valorAbastecimento: valor,
+        valorEmCreditos: totalCreditos
+      }
+    })
+
+    res.send(history)
   }
 }

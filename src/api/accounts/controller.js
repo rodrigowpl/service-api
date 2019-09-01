@@ -197,69 +197,6 @@ module.exports = {
     })
   },
 
-  getAllUsers: async (req, res) => {
-    const { accountId } = req.params
-    const { codigo, nome, cpf, placa } = req.query
-
-    let where = {
-      accountId,
-      ativado: ACTIVED
-    }
-
-    if (codigo) {
-      where = {
-        ...where,
-        codigo: {
-          [Op.iLike]: `%${codigo}%`
-        }
-      }
-    }
-
-    if (nome) {
-      where = {
-        ...where,
-        nome: {
-          [Op.iLike]: `%${nome}%`
-        }
-      }
-    }
-
-    if (cpf) {
-      where = {
-        ...where,
-        cpf: {
-          [Op.iLike]: `%${cpf}%`
-        }
-      }
-    }
-
-    if (placa) {
-      where = {
-        ...where,
-        placa: {
-          [Op.iLike]: `%${placa}%`
-        }
-      }
-    }
-
-    const users = await User.findAll({
-      where,
-      attributes: [
-        'id',
-        'codigo',
-        'nome',
-        'cpf',
-        'placa',
-        'usuario',
-        'saldo',
-        'limiteGastoDiario',
-        'limiteGastoMensal'
-      ]
-    })
-
-    res.send(users)
-  },
-
   getAllSupplies: async (req, res) => {
     const { accountId } = req.params
 
