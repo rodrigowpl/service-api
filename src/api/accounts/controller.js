@@ -244,66 +244,48 @@ module.exports = {
   getAllSupplies: async (req, res) => {
     const { accountId } = req.params
 
-    const account = await Account.findOne({
-      where: { id: accountId },
-      include: [{
-        model: User,
-        as: 'users',
-        attributes: ['id']
-      }]
+    const users = await User.findAll({ where: { accountId } })
+    const allUsersIds = users.reduce((acc, curr) => acc.concat(curr.id), [])
+
+    const pendentSupplies = await Supply.findAll({
+      where: {
+        userId: {
+          [Op.in]: allUsersIds
+        },
+        status: SUPPLY_STATUS.PENDENT,
+        createdAt: {
+          [Op.between]: [startOfDay(new Date()), endOfDay(new Date())]
+        },
+      },
+      order: [['created_at', 'DESC']]
     })
 
-    const allUserSupplies = await Promise.all(
-      account.users.map(async ({ id: userId }) => {
-        const pendentSupplies = await Supply.findAll({
-          where: {
-            userId,
-            status: SUPPLY_STATUS.PENDENT,
-            createdAt: {
-              [Op.between]: [startOfDay(new Date()), endOfDay(new Date())]
-            },
-          },
-          order: [['created_at', 'DESC']]
-        })
-
-        const concludedSupplies = await Supply.findAll({
-          where: {
-            userId,
-            status: SUPPLY_STATUS.CONCLUDED,
-            dataConclusao: {
-              [Op.between]: [startOfDay(new Date()), endOfDay(new Date())]
-            },
-          },
-          order: [['data_conclusao', 'DESC']]
-        })
-
-        const normalize = (type, data) => data.map(item => ({
-          id: item.id,
-          placa: item.placa,
-          valor: item.valor,
-          combustivel: item.combustivel,
-          dataRealizado: type === 'concluded' ? humanizeDateTime(item.dataConclusao) : formatHour(item.createdAt),
-          token: item.token
-        }))
-
-        return {
-          emAndamento: normalize('pendent', pendentSupplies),
-          concluido: normalize('concluded', concludedSupplies)
-        }
-      })
-    )
-
-    const response = allUserSupplies.reduce((acc, curr) => {
-      const item = {
-        emAndamento: acc.emAndamento.concat(curr.emAndamento),
-        concluido: acc.concluido.concat(curr.concluido)
-      }
-
-      return item
-    }, {
-      emAndamento: [],
-      concluido: []
+    const concludedSupplies = await Supply.findAll({
+      where: {
+        userId: {
+          [Op.in]: allUsersIds
+        },
+        status: SUPPLY_STATUS.CONCLUDED,
+        dataConclusao: {
+          [Op.between]: [startOfDay(new Date()), endOfDay(new Date())]
+        },
+      },
+      order: [['data_conclusao', 'DESC']]
     })
+
+    const normalize = (type, data) => data.map(item => ({
+      id: item.id,
+      placa: item.placa,
+      valor: item.valor,
+      combustivel: item.combustivel,
+      dataRealizado: type === 'concluded' ? humanizeDateTime(item.dataConclusao) : formatHour(item.createdAt),
+      token: item.token
+    }))
+
+    const response = {
+      emAndamento: normalize('pendent', pendentSupplies),
+      concluido: normalize('concluded', concludedSupplies)
+    }
 
     res.send(response)
   }
