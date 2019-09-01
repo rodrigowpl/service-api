@@ -16,6 +16,7 @@ const DEFAULT_ATTRIBUTES = [
   'cpf',
   'placa',
   'usuario',
+  'tipoSaldo',
   'saldo',
   'limiteGastoDiario',
   'limiteGastoMensal'

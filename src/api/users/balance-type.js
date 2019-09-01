@@ -1,6 +1,6 @@
 module.exports = {
   BALANCE_TYPE: {
-    PERSONAL: 'personal',
-    SHARED: 'shared'
+    PERSONAL: 'proprio',
+    SHARED: 'compartilhado'
   }
 }
