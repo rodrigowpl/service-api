@@ -199,11 +199,20 @@ module.exports = {
 
   getAllUsers: async (req, res) => {
     const { accountId } = req.params
-    const { nome, cpf, placa } = req.query
+    const { codigo, nome, cpf, placa } = req.query
 
     let where = {
       accountId,
       ativado: ACTIVED
+    }
+
+    if (codigo) {
+      where = {
+        ...where,
+        codigo: {
+          [Op.iLike]: `%${codigo}%`
+        }
+      }
     }
 
     if (nome) {
@@ -235,7 +244,17 @@ module.exports = {
 
     const users = await User.findAll({
       where,
-      attributes: ['id', 'codigo', 'nome', 'cpf', 'placa', 'usuario']
+      attributes: [
+        'id',
+        'codigo',
+        'nome',
+        'cpf',
+        'placa',
+        'usuario',
+        'saldo',
+        'limiteGastoDiario',
+        'limiteGastoMensal'
+      ]
     })
 
     res.send(users)

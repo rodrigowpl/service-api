@@ -53,6 +53,14 @@ module.exports = sequelize => (
     tipoSaldo: {
       type: DataTypes.STRING,
       defaultValue: BALANCE_TYPE.SHARED
+    },
+    limiteGastoDiario: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
+    limiteGastoMensal: {
+      type: DataTypes.INTEGER,
+      allowNull: true
     }
   }, {
     tableName: 'user'

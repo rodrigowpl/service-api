@@ -71,9 +71,20 @@ module.exports = {
 
   update: async (req, res) => {
     const { userId } = req.params
-    const { nome, email, senha, cpf, placa } = req.body
+    const { email, senha } = req.body
 
     const user = await User.findOne({
+      attributes: [
+        'id',
+        'codigo',
+        'nome',
+        'cpf',
+        'placa',
+        'usuario',
+        'saldo',
+        'limiteGastoDiario',
+        'limiteGastoMensal'
+      ],
       where: { id: userId }
     })
 
@@ -83,24 +94,12 @@ module.exports = {
     }
 
     const userUpdated = await user.update({
-      nome,
+      ...req.body,
       usuario: email,
-      email,
-      senha: passwordEncrypted || user.senha,
-      cpf,
-      placa
+      senha: passwordEncrypted || user.senha
     })
 
-    const response = {
-      id: userUpdated.id,
-      codigo: userUpdated.codigo,
-      nome: userUpdated.nome,
-      cpf: userUpdated.cpf,
-      placa: userUpdated.placa,
-      usuario: userUpdated.usuario
-    }
-
-    res.send(response)
+    res.send(userUpdated)
   },
 
   delete: async (req, res) => {
