@@ -14,6 +14,7 @@ router.post('/login', AccountController.login)
 router.get('/:accountId/faturamento', AccountController.getTotalBiling)
 router.get('/:accountId/postos', AccountController.getAllGasStations)
 router.get('/:accountId/abastecimentos', AccountController.getAllSupplies)
+router.get('/:accountId/saldo', AccountController.getBudget)
 
 router.post('/habilitarPostos', GasStationAccountController.enableOrDisable)
 

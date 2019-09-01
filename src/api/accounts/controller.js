@@ -10,6 +10,7 @@ const { SUPPLY_STATUS } = require('../supplies/supply-status')
 const { generateJWTToken } = require('../../helpers/token')
 const { humanizeDateTime, formatHour } = require('../../helpers/date')
 const { ACTIVED, DEACTIVED } = require('../../helpers/constants')
+const { formatCurrency } = require('../../helpers/number')
 
 const gasStationAccountController = require('../gas-stations-accounts/controller')
 
@@ -238,11 +239,33 @@ module.exports = {
       token: item.token
     }))
 
-    const response = {
+    res.send({
       emAndamento: normalize('pendent', pendentSupplies),
       concluido: normalize('concluded', concludedSupplies)
-    }
+    })
+  },
 
-    res.send(response)
+  getBudget: async (req, res) => {
+    const { accountId } = req.params
+
+    const account = await Account.findOne({
+      where: { id: accountId },
+      include: [{
+        model: User,
+        as: 'users'
+      }]
+    })
+
+    const allUsersValues = account.users.map(({ saldo }) => saldo)
+    const totalUsersBudget = R.sum(allUsersValues)
+
+    const accountBudget = account.saldo
+    const sharedBudget = accountBudget - totalUsersBudget
+
+    res.send({
+      saldo: formatCurrency(accountBudget),
+      compartilhado: formatCurrency(sharedBudget),
+      especifico: formatCurrency(totalUsersBudget)
+    })
   }
 }
