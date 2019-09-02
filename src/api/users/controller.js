@@ -151,7 +151,9 @@ module.exports = {
       where: { id: userId }
     })
 
-    return res.send({ saldo: user.saldo })
+    return res.send({
+      saldo: user.saldo ? `${getCurrencyFormattedByCents(user.saldo)}` : null
+    })
   },
 
   getAllByAccount: async (req, res) => {
