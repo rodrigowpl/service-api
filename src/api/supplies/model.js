@@ -27,7 +27,7 @@ module.exports = sequelize => (
       type: DataTypes.STRING
     },
     valor: {
-      type: DataTypes.DOUBLE
+      type: DataTypes.INTEGER
     },
     status: {
       type: DataTypes.INTEGER,
@@ -37,7 +37,7 @@ module.exports = sequelize => (
       type: DataTypes.DOUBLE
     },
     totalCreditos: {
-      type: DataTypes.DOUBLE
+      type: DataTypes.INTEGER
     },
     dataConclusao: {
       type: DataTypes.DATE
