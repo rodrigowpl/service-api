@@ -26,18 +26,19 @@ module.exports = {
   },
 
   create: async (req, res) => {
-    const { nome, email, senha, saldo, banco, telefone, agencia, conta, idEmpresa, idPosto } = req.body
+    const { nome, email, senha, cnpj, saldo, banco, telefone, agencia, conta, idEmpresa, idPosto } = req.body
     const passwordEncrypted = await bcrypt.hash(senha, 12)
 
     const account = await Account.create({
       nome,
       email,
+      senha: passwordEncrypted,
+      cnpj,
       saldo,
       banco,
       agencia,
       telefone,
       conta,
-      senha: passwordEncrypted,
       companyId: idEmpresa,
       gasStationId: idPosto
     })
@@ -47,7 +48,7 @@ module.exports = {
 
   update: async (req, res) => {
     const { accountId } = req.params
-    const { nome, email, saldo, banco, agencia, telefone, conta, idEmpresa, idPosto } = req.body
+    const { nome, email, cnpj, saldo, banco, agencia, telefone, conta, idEmpresa, idPosto } = req.body
 
     const account = await Account.findOne({
       where: {
@@ -58,6 +59,7 @@ module.exports = {
     const accountUpdated = await account.update({
       nome,
       email,
+      cnpj,
       saldo,
       banco,
       telefone,

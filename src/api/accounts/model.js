@@ -18,6 +18,9 @@ module.exports = sequelize => (
     senha: {
       type: DataTypes.STRING
     },
+    cnpj: {
+      type: DataTypes.STRING
+    },
     saldo: {
       type: DataTypes.DOUBLE,
       defaultValue: 0
