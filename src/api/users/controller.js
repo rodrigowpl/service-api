@@ -1,13 +1,11 @@
 const { Op } = require('sequelize')
 const bcrypt = require('bcrypt')
 
-const { User, Account } = require('../models')
+const { User } = require('../models')
 
 const { generateJWTToken, generatePinCode } = require('../../helpers/token')
 const { ACTIVED, DEACTIVED } = require('../../helpers/constants')
 const { getCurrencyFormattedByCents } = require('../../helpers/number')
-
-const { BALANCE_TYPE } = require('./balance-type')
 
 const DEFAULT_ATTRIBUTES = [
   'id',
@@ -150,18 +148,10 @@ module.exports = {
     const userId = req.params.userId
 
     const user = await User.findOne({
-      where: { id: userId },
-      include: [Account]
+      where: { id: userId }
     })
 
-    let balance = 0
-    if (user.tipoSaldo === BALANCE_TYPE.SHARED) {
-      balance = user.account.saldo
-    } else {
-      balance = user.saldo
-    }
-
-    return res.send({ saldo: balance })
+    return res.send({ saldo: user.saldo })
   },
 
   getAllByAccount: async (req, res) => {
