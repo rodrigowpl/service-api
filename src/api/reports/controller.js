@@ -4,7 +4,7 @@ const { SUPPLY_STATUS } = require('../supplies/supply-status')
 
 const { formatDate, formatHour, getUTCDate } = require('../../helpers/date')
 const { buildRangeFilterQuery, buildPaginatedQuery } = require('../../helpers/sequelize-helpers')
-const { fixedNumberTwoDecimals, calcPercentage } = require('../../helpers/number')
+const { fixedNumberTwoDecimals, calcPercentage, getCurrencyFormattedByCents } = require('../../helpers/number')
 
 const ConfigurationController = require('../configurations/controller')
 
@@ -101,7 +101,7 @@ module.exports = {
           usuario: user.nome,
           data: formatDate(supply.dataConclusao),
           hora: formatHour(supply.dataConclusao),
-          valor: `R$${supply.valor}`,
+          valor: getCurrencyFormattedByCents(supply.valor),
           combustivel: supply.combustivel,
           totalCreditos: `R$${supply.totalCreditos}`,
           posto: gasStation.nome,
