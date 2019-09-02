@@ -47,7 +47,7 @@ module.exports = {
 
   update: async (req, res) => {
     const { accountId } = req.params
-    const { nome, email, saldo, banco, agencia, conta, idEmpresa, idPosto } = req.body
+    const { nome, email, saldo, banco, agencia, telefone, conta, idEmpresa, idPosto } = req.body
 
     const account = await Account.findOne({
       where: {
@@ -60,6 +60,7 @@ module.exports = {
       email,
       saldo,
       banco,
+      telefone,
       agencia,
       conta,
       companyId: idEmpresa,
