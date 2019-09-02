@@ -49,13 +49,13 @@ module.exports = sequelize => (
       type: DataTypes.DOUBLE
     },
     gasolina: {
-      type: DataTypes.DOUBLE
+      type: DataTypes.INTEGER
     },
     diesel: {
-      type: DataTypes.DOUBLE
+      type: DataTypes.INTEGER
     },
     etanol: {
-      type: DataTypes.DOUBLE
+      type: DataTypes.INTEGER
     },
     ganhoGasolina: {
       type: DataTypes.DOUBLE

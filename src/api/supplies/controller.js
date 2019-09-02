@@ -40,17 +40,16 @@ module.exports = {
       }
     }
 
-    const supplyValue = parseFloat(valor)
     const { fuelValue, fuelCredit } = fuelValues[combustivel]
 
-    const totalLiters = fixedNumberTwoDecimals(supplyValue / fuelValue)
+    const totalLiters = fixedNumberTwoDecimals(valor / fuelValue)
     const totalCredits = fixedNumberTwoDecimals(totalLiters * fuelCredit)
 
     const supply = await Supply.create({
       codigo: generatePinCode(8),
       userId: idUsuario,
       gasStationId: idPosto,
-      valor: supplyValue,
+      valor,
       combustivel,
       km,
       placa,
