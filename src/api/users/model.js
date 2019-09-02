@@ -47,8 +47,7 @@ module.exports = sequelize => (
       defaultValue: ACTIVED
     },
     saldo: {
-      type: DataTypes.DOUBLE,
-      defaultValue: 0
+      type: DataTypes.INTEGER
     },
     tipoSaldo: {
       type: DataTypes.STRING,
