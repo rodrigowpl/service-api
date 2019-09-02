@@ -162,7 +162,7 @@ module.exports = {
           habilitado: await gasStationAccountController.getGasStationEnable(accountId, gasStation.id),
           bandeira: gasStation.bandeira,
           nome: gasStation.nome,
-          endereco: `${gasStation.logradouro}, ${gasStation.bairro}, ${gasStation.cidade}`,
+          endereco: gasStation.endereco,
           gasolina: gasStation.gasolina,
           ganhoGasolina: gasStation.ganhoGasolina,
           diesel: gasStation.diesel,

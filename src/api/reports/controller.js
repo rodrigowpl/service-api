@@ -1,4 +1,4 @@
-const { Supply, Account, Company, User } = require('../models')
+const { Supply, Account, Company, User, GasStation } = require('../models')
 
 const { SUPPLY_STATUS } = require('../supplies/supply-status')
 
@@ -64,19 +64,14 @@ module.exports = {
     const { count, rows: supplies } = await Supply.findAndCountAll({
       where,
       order: [['data_conclusao', 'DESC']],
-      include: [User],
+      include: [User, GasStation],
       ...buildPaginatedQuery({ page, pageSize })
-    })
-
-    const company = await Company.findOne({
-      where: { id: account.companyId }
     })
 
     const reportSupplies = await Promise.all(
       supplies.map(async supply => {
-        const configuration = await ConfigurationController.getConfiguration({
+        const configuration = await ConfigurationController.getGasStationConfiguration({
           fuelType: supply.combustivel,
-          companyId: company.id,
           gasStationId: supply.gasStationId
         })
 
@@ -88,22 +83,37 @@ module.exports = {
           return
         }
 
+        const gasStation = supply.gasStation
+        const user = supply.user
+
+        const { company } = await Account.findOne({
+          include: [Company],
+          where: {
+            id: user.accountId
+          }
+        })
+
         const valueDiscounted = calcPercentage(supply.valor, configuration.taxaGasola)
         const taxedValue = fixedNumberTwoDecimals(supply.valor - valueDiscounted)
 
         return {
           numero: supply.codigo,
+          usuario: user.nome,
           data: formatDate(supply.dataConclusao),
           hora: formatHour(supply.dataConclusao),
           valor: `R$${supply.valor}`,
           combustivel: supply.combustivel,
+          totalCreditos: `R$${supply.totalCreditos}`,
+          posto: gasStation.nome,
+          bandeiraPosto: gasStation.bandeira,
+          enderecoPosto: gasStation.endereco,
+          quilometragem: supply.km,
           empresa: company.nome,
           taxaGasola: `${configuration.taxaGasola}%`,
           valorReceber: `R$${taxedValue}`,
-          totalLitros: supply.totalLitros,
           prazoPagamento: `${configuration.prazoPagamentoGasola} dias`,
           dataPagamento: formatDate(supply.dataPagamento),
-          usuario: supply.user.nome
+          geoLocalizacaoPosto: `${gasStation.latitude} ${gasStation.longitude}`
         }
       })
     )

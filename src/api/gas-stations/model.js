@@ -71,6 +71,11 @@ module.exports = sequelize => (
       defaultValue: ACTIVED
     }
   }, {
-    tableName: 'gas_station'
+    tableName: 'gas_station',
+    getterMethods: {
+      endereco () {
+        return `${this.logradouro}, ${this.bairro}, ${this.cidade}`
+      }
+    }
   })
 )

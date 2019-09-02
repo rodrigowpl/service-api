@@ -98,11 +98,10 @@ module.exports = {
     res.send(normalizedResponse)
   },
 
-  getConfiguration: async ({ fuelType, companyId, gasStationId }) => {
+  getGasStationConfiguration: async ({ fuelType, gasStationId }) => {
     const configuration = await Configuration.findOne({
       where: {
         combustivel: fuelType,
-        companyId,
         gasStationId,
         ativado: ACTIVED
       }

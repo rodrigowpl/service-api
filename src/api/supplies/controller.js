@@ -99,8 +99,7 @@ module.exports = {
       where: { id: user.accountId }
     })
 
-    const configuration = await ConfigurationController.getConfiguration({
-      companyId: account.companyId,
+    const configuration = await ConfigurationController.getGasStationConfiguration({
       fuelType: supply.combustivel,
       gasStationId: supply.gasStationId
     })
@@ -108,7 +107,7 @@ module.exports = {
     if (!configuration) {
       res.status(422).send({
         code: 422,
-        result: 'Nenhuma configuraçào cadastrada para essa empresa, posto ou tipo do combustível.'
+        result: 'Nenhuma configuraçào cadastrada para esse posto ou tipo do combustível.'
       })
       return
     }
