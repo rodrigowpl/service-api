@@ -13,6 +13,7 @@ const normalizeResponse = (gasStation) => ({
   banco: gasStation.banco,
   agencia: gasStation.agencia,
   conta: gasStation.conta,
+  cnpj: gasStation.cnpj,
   geoloc: {
     latitude: gasStation.latitude,
     longitude: gasStation.longitude

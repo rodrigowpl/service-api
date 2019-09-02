@@ -26,7 +26,7 @@ module.exports = {
   },
 
   create: async (req, res) => {
-    const { nome, email, senha, saldo, banco, agencia, conta, idEmpresa, idPosto } = req.body
+    const { nome, email, senha, saldo, banco, telefone, agencia, conta, idEmpresa, idPosto } = req.body
     const passwordEncrypted = await bcrypt.hash(senha, 12)
 
     const account = await Account.create({
@@ -35,6 +35,7 @@ module.exports = {
       saldo,
       banco,
       agencia,
+      telefone,
       conta,
       senha: passwordEncrypted,
       companyId: idEmpresa,
