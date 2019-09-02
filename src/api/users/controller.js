@@ -88,7 +88,7 @@ module.exports = {
 
   update: async (req, res) => {
     const { userId } = req.params
-    const { email, senha } = req.body
+    const { usuario, senha } = req.body
 
     const user = await User.findOne({
       attributes: DEFAULT_ATTRIBUTES,
@@ -102,7 +102,8 @@ module.exports = {
 
     const userUpdated = await user.update({
       ...req.body,
-      usuario: email,
+      usuario,
+      email: usuario,
       senha: passwordEncrypted || user.senha
     })
 
