@@ -22,8 +22,7 @@ module.exports = sequelize => (
       type: DataTypes.STRING
     },
     saldo: {
-      type: DataTypes.DOUBLE,
-      defaultValue: 0
+      type: DataTypes.INTEGER
     },
     telefone: {
       type: DataTypes.STRING,
