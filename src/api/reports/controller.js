@@ -29,8 +29,15 @@ module.exports = {
     })
 
     let where = {
-      status: SUPPLY_STATUS.CONCLUDED,
-      gasStationId: account.gasStationId
+      status: SUPPLY_STATUS.CONCLUDED
+    }
+
+    // TODO deve filtrar pelos postos da conta?
+    if (account.gasStationId) {
+      where = {
+        ...where,
+        gasStationId: account.gasStationId
+      }
     }
 
     if (idUsuario) {
