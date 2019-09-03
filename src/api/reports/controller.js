@@ -4,7 +4,7 @@ const { SUPPLY_STATUS } = require('../supplies/supply-status')
 
 const { formatDate, formatHour, getUTCDate } = require('../../helpers/date')
 const { buildRangeFilterQuery, buildPaginatedQuery } = require('../../helpers/sequelize-helpers')
-const { fixedNumberTwoDecimals, calcPercentage, getCurrencyFormattedByCents } = require('../../helpers/number')
+const { calcPercentage, getCurrencyFormattedByCents } = require('../../helpers/number')
 
 const ConfigurationController = require('../configurations/controller')
 
@@ -94,7 +94,7 @@ module.exports = {
         })
 
         const valueDiscounted = calcPercentage(supply.valor, configuration.taxaGasola)
-        const taxedValue = fixedNumberTwoDecimals(supply.valor - valueDiscounted)
+        const taxedValue = supply.valor - valueDiscounted
 
         return {
           numero: supply.codigo,
@@ -103,14 +103,14 @@ module.exports = {
           hora: formatHour(supply.dataConclusao),
           valor: getCurrencyFormattedByCents(supply.valor),
           combustivel: supply.combustivel,
-          totalCreditos: `R$${supply.totalCreditos}`,
+          totalCreditos: getCurrencyFormattedByCents(supply.totalCreditos),
           posto: gasStation.nome,
           bandeiraPosto: gasStation.bandeira,
           enderecoPosto: gasStation.endereco,
           quilometragem: supply.km,
           empresa: company.nome,
           taxaGasola: `${configuration.taxaGasola}%`,
-          valorReceber: `R$${taxedValue}`,
+          valorReceber: getCurrencyFormattedByCents(taxedValue),
           prazoPagamento: `${configuration.prazoPagamentoGasola} dias`,
           dataPagamento: formatDate(supply.dataPagamento),
           geoLocalizacaoPosto: `${gasStation.latitude} ${gasStation.longitude}`
