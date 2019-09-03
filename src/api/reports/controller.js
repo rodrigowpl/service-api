@@ -12,6 +12,7 @@ module.exports = {
   getAllSupplies: async (req, res) => {
     const {
       idConta,
+      idUsuario,
       dataDe,
       dataAte,
       valorDe,
@@ -30,6 +31,13 @@ module.exports = {
     let where = {
       status: SUPPLY_STATUS.CONCLUDED,
       gasStationId: account.gasStationId
+    }
+
+    if (idUsuario) {
+      where = {
+        ...where,
+        userId: idUsuario
+      }
     }
 
     if (dataDe || dataAte) {
