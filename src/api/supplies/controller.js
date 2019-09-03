@@ -4,7 +4,6 @@ const camelCase = require('camelcase')
 
 const { Supply, GasStation, User, Account } = require('../models')
 
-const { fixedNumberTwoDecimals } = require('../../helpers/number')
 const { generateRandomToken, generatePinCode } = require('../../helpers/token')
 const { humanizeDateTime } = require('../../helpers/date')
 
@@ -42,8 +41,8 @@ module.exports = {
 
     const { fuelValue, fuelCredit } = fuelValues[combustivel]
 
-    const totalLiters = fixedNumberTwoDecimals(valor / fuelValue)
-    const totalCredits = fixedNumberTwoDecimals(totalLiters * fuelCredit)
+    const totalLiters = valor / fuelValue
+    const totalCredits = Math.round((totalLiters * fuelCredit) * 100)
 
     const supply = await Supply.create({
       codigo: generatePinCode(8),
