@@ -153,7 +153,7 @@ module.exports = {
     })
 
     return res.send({
-      saldo: user.saldo ? `${getCurrencyFormattedByCents(user.saldo)}` : null
+      saldo: user.saldo !== null ? `${getCurrencyFormattedByCents(user.saldo)}` : null
     })
   },
 
