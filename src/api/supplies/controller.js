@@ -6,6 +6,7 @@ const { Supply, GasStation, User, Account } = require('../models')
 
 const { generateRandomToken, generatePinCode } = require('../../helpers/token')
 const { humanizeDateTime } = require('../../helpers/date')
+const { getCurrencyFormattedByCents } = require('../../helpers/number')
 
 const { BALANCE_TYPE } = require('../users/balance-type')
 
@@ -215,8 +216,8 @@ module.exports = {
         data: humanizeDateTime(dataConclusao),
         combustivel: camelCase(combustivel, { pascalCase: true }),
         totalLitros,
-        valorAbastecimento: valor,
-        valorEmCreditos: totalCreditos
+        valorAbastecimento: getCurrencyFormattedByCents(valor),
+        valorEmCreditos: getCurrencyFormattedByCents(totalCreditos)
       }
     })
 
