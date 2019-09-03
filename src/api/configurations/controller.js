@@ -11,7 +11,7 @@ const normalizeResponse = (configuration) => ({
   prazoPagamentoCliente: configuration.prazoPagamentoCliente,
   desconto: configuration.desconto,
   empresa: configuration.company ? configuration.company.nome : '-',
-  posto: configuration.gasStation.nome
+  posto: configuration.gasStation ? configuration.gasStation.nome : '-'
 })
 
 module.exports = {
