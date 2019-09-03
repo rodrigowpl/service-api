@@ -99,6 +99,7 @@ module.exports = {
         return {
           numero: supply.codigo,
           usuario: user.nome,
+          placa: user.placa,
           data: formatDate(supply.dataConclusao),
           hora: formatHour(supply.dataConclusao),
           valor: getCurrencyFormattedByCents(supply.valor),
