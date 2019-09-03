@@ -198,7 +198,7 @@ module.exports = {
     const biling = R.sum(values).toFixed(2)
 
     res.send({
-      faturamento: biling
+      faturamento: biling / 100
     })
   },
 
