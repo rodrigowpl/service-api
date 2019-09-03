@@ -152,6 +152,7 @@ module.exports = {
           quilometragem: formatMiles(supply.km),
           empresa: company.nome,
           taxaGasola: `${configuration.taxaGasola}%`,
+          totalLitros: supply.totalCreditos,
           valorReceber: getCurrencyFormattedByCents(taxedValue),
           prazoPagamento: `${configuration.prazoPagamentoGasola} dias`,
           dataPagamento: formatDate(supply.dataPagamento),
