@@ -10,7 +10,7 @@ const normalizeResponse = (configuration) => ({
   prazoPagamentoGasola: configuration.prazoPagamentoGasola,
   prazoPagamentoCliente: configuration.prazoPagamentoCliente,
   desconto: configuration.desconto,
-  empresa: configuration.company.nome,
+  empresa: configuration.company ? configuration.company.nome : '-',
   posto: configuration.gasStation.nome
 })
 
