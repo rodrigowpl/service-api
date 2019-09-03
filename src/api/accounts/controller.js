@@ -10,6 +10,7 @@ const { SUPPLY_STATUS } = require('../supplies/supply-status')
 const { generateJWTToken } = require('../../helpers/token')
 const { humanizeDateTime, formatHour } = require('../../helpers/date')
 const { ACTIVED, DEACTIVED } = require('../../helpers/constants')
+const { getCurrencyFormattedByCents } = require('../../helpers/number')
 
 const gasStationAccountController = require('../gas-stations-accounts/controller')
 
@@ -267,9 +268,9 @@ module.exports = {
     const sharedBudget = accountBudget - totalUsersBudget
 
     res.send({
-      saldo: accountBudget / 100,
-      compartilhado: sharedBudget / 100,
-      especifico: totalUsersBudget / 100
+      saldo: getCurrencyFormattedByCents(accountBudget),
+      compartilhado: getCurrencyFormattedByCents(sharedBudget),
+      especifico: getCurrencyFormattedByCents(totalUsersBudget)
     })
   }
 }
