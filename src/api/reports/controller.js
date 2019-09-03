@@ -1,3 +1,5 @@
+const { Op } = require('sequelize')
+
 const { Supply, Account, Company, User, GasStation } = require('../models')
 
 const { SUPPLY_STATUS } = require('../supplies/supply-status')
@@ -20,6 +22,7 @@ module.exports = {
       combustivel,
       dataPagamentoDe,
       dataPagamentoAte,
+      bandeira,
       page,
       pageSize
     } = req.query
@@ -57,7 +60,7 @@ module.exports = {
     }
 
     if (valorDe || valorAte) {
-      where = buildRangeFilterQuery(where, 'valor', valorDe, valorAte)
+      where = buildRangeFilterQuery(where, 'valor', valorDe * 100, valorAte * 100)
     }
 
     if (dataPagamentoDe || dataPagamentoAte) {
@@ -76,10 +79,22 @@ module.exports = {
       }
     }
 
+    let gasStationWhere = {}
+    if (bandeira) {
+      gasStationWhere = {
+        bandeira: {
+          [Op.iLike]: `%${bandeira}%`
+        }
+      }
+    }
+
     const { count, rows: supplies } = await Supply.findAndCountAll({
       where,
       order: [['data_conclusao', 'DESC']],
-      include: [User, GasStation],
+      include: [User, {
+        model: GasStation,
+        where: gasStationWhere
+      }],
       ...buildPaginatedQuery({ page, pageSize })
     })
 
