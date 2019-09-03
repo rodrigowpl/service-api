@@ -2,7 +2,6 @@ const { User, GasStation, Account } = require('../models')
 
 const { formatHour } = require('../../helpers/date')
 const { ACTIVED, DEACTIVED } = require('../../helpers/constants')
-const { getCurrencyFormattedByCents } = require('../../helpers/number')
 
 const normalizeResponse = (gasStation) => ({
   id: gasStation.id,
@@ -19,9 +18,9 @@ const normalizeResponse = (gasStation) => ({
     latitude: gasStation.latitude,
     longitude: gasStation.longitude
   },
-  gasolina: getCurrencyFormattedByCents(gasStation.gasolina),
-  diesel: getCurrencyFormattedByCents(gasStation.diesel),
-  etanol: getCurrencyFormattedByCents(gasStation.etanol),
+  gasolina: gasStation.gasolina / 100,
+  diesel: gasStation.diesel / 100,
+  etanol: gasStation.etanol / 100,
   ganhoGasolina: gasStation.ganhoGasolina,
   ganhoDiesel: gasStation.ganhoDiesel,
   ganhoEtanol: gasStation.ganhoEtanol,
