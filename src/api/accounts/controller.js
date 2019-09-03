@@ -11,6 +11,7 @@ const { generateJWTToken } = require('../../helpers/token')
 const { humanizeDateTime, formatHour } = require('../../helpers/date')
 const { ACTIVED, DEACTIVED } = require('../../helpers/constants')
 const { formatCurrency } = require('../../helpers/number')
+const { getCurrencyFormattedByCents } = require('../../helpers/number')
 
 const gasStationAccountController = require('../gas-stations-accounts/controller')
 
@@ -237,7 +238,7 @@ module.exports = {
     const normalize = (type, data) => data.map(item => ({
       id: item.id,
       placa: item.placa,
-      valor: item.valor,
+      valor: getCurrencyFormattedByCents(item.valor),
       combustivel: item.combustivel,
       dataRealizado: type === 'concluded' ? humanizeDateTime(item.dataConclusao) : formatHour(item.createdAt),
       token: item.token
