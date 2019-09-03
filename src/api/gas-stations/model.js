@@ -48,24 +48,6 @@ module.exports = sequelize => (
     longitude: {
       type: DataTypes.DOUBLE
     },
-    gasolina: {
-      type: DataTypes.INTEGER
-    },
-    diesel: {
-      type: DataTypes.INTEGER
-    },
-    etanol: {
-      type: DataTypes.INTEGER
-    },
-    ganhoGasolina: {
-      type: DataTypes.DOUBLE
-    },
-    ganhoDiesel: {
-      type: DataTypes.DOUBLE
-    },
-    ganhoEtanol: {
-      type: DataTypes.DOUBLE
-    },
     ativado: {
       type: DataTypes.INTEGER,
       defaultValue: ACTIVED

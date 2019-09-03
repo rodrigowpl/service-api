@@ -6,9 +6,7 @@ const { SUPPLY_STATUS } = require('../supplies/supply-status')
 
 const { formatDate, formatHour, getUTCDate } = require('../../helpers/date')
 const { buildRangeFilterQuery, buildPaginatedQuery } = require('../../helpers/sequelize-helpers')
-const { calcPercentage, getCurrencyFormattedByCents, formatMiles } = require('../../helpers/number')
-
-const ConfigurationController = require('../configurations/controller')
+const { getCurrencyFormattedByCents, formatMiles } = require('../../helpers/number')
 
 module.exports = {
   getAllSupplies: async (req, res) => {
@@ -107,21 +105,8 @@ module.exports = {
 
     const reportSupplies = await Promise.all(
       supplies.map(async supply => {
-        const configuration = await ConfigurationController.getGasStationConfiguration({
-          fuelType: supply.combustivel,
-          gasStationId: supply.gasStationId
-        })
-
-        if (!configuration) {
-          res.status(422).send({
-            code: 422,
-            result: 'Nenhuma configuraçào cadastrada para essa empresa, posto ou tipo do combustível.'
-          })
-          return
-        }
-
-        const gasStation = supply.gasStation
         const user = supply.user
+        const gasStation = supply.gasStation
 
         const { company } = await Account.findOne({
           include: [Company],
@@ -129,9 +114,6 @@ module.exports = {
             id: user.accountId
           }
         })
-
-        const valueDiscounted = calcPercentage(supply.valor, configuration.taxaGasola)
-        const taxedValue = supply.valor - valueDiscounted
 
         return {
           numero: supply.codigo,
@@ -147,10 +129,10 @@ module.exports = {
           enderecoPosto: supply.endereco,
           quilometragem: formatMiles(supply.km),
           empresa: company.nome,
-          taxaGasola: `${configuration.taxaGasola}%`,
+          taxaGasola: `${supply.taxaGasola}%`,
           totalLitros: supply.totalLitros.toFixed(2),
-          valorReceber: getCurrencyFormattedByCents(taxedValue),
-          prazoPagamento: `${configuration.prazoPagamentoGasola} dias`,
+          valorReceber: getCurrencyFormattedByCents(supply.valorTaxado),
+          prazoPagamento: `${supply.prazoPagamento} dias`,
           dataPagamento: formatDate(supply.dataPagamento),
           geoLocalizacaoPosto: `${gasStation.latitude} ${gasStation.longitude}`
         }

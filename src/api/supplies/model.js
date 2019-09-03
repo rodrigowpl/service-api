@@ -41,6 +41,15 @@ module.exports = sequelize => (
     endereco: {
       type: DataTypes.STRING
     },
+    taxaGasola: {
+      type: DataTypes.DOUBLE,
+    },
+    prazoPagamento: {
+      type: DataTypes.INTEGER
+    },
+    valorTaxado: {
+      type: DataTypes.INTEGER
+    },
     status: {
       type: DataTypes.INTEGER,
       defaultValue: SUPPLY_STATUS.PENDENT

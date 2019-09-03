@@ -6,12 +6,11 @@ const { Supply, GasStation, User, Account } = require('../models')
 
 const { generateRandomToken, generatePinCode } = require('../../helpers/token')
 const { humanizeDateTime } = require('../../helpers/date')
-const { getCurrencyFormattedByCents } = require('../../helpers/number')
+const { getCurrencyFormattedByCents, calcPercentage } = require('../../helpers/number')
 
 const ConfigurationController = require('../configurations/controller')
 
 const { SUPPLY_STATUS } = require('./supply-status')
-const { FUEL_TYPE } = require('./fuel_type')
 
 module.exports = {
   create: async (req, res) => {
@@ -23,29 +22,27 @@ module.exports = {
       where: { id: idPosto }
     })
 
-    const fuelValues = {
-      [FUEL_TYPE.GASOLINE]: {
-        fuelValue: gasStation.gasolina,
-        fuelCredit: gasStation.ganhoGasolina
-      },
-      [FUEL_TYPE.ETHANOL]: {
-        fuelValue: gasStation.etanol,
-        fuelCredit: gasStation.ganhoEtanol
-      },
-      [FUEL_TYPE.DIESEL]: {
-        fuelValue: gasStation.diesel,
-        fuelCredit: gasStation.ganhoDiesel
-      }
-    }
-
-    const { fuelValue, fuelCredit } = fuelValues[combustivel]
-
-    const totalLiters = valor / fuelValue
-    const totalCredits = Math.round((totalLiters * fuelCredit) * 100)
-
     const user = await User.findOne({
+      include: [Account],
       where: { id: idUsuario }
     })
+
+    const configuration = await ConfigurationController.getConfiguration({
+      fuelType: combustivel,
+      companyId: user.account.companyId,
+      gasStationId: gasStation.id
+    })
+
+    if (!configuration) {
+      res.status(422).send({
+        code: 422,
+        result: 'Nenhuma configuraçào cadastrada para a empresa do motorista, posto ou tipo do combustível.'
+      })
+      return
+    }
+
+    const totalLiters = valor / configuration.valorVenda
+    const totalCredits = Math.round((totalLiters * configuration.desconto) * 100)
 
     const supply = await Supply.create({
       codigo: generatePinCode(8),
@@ -104,24 +101,31 @@ module.exports = {
       where: { id: user.accountId }
     })
 
-    const configuration = await ConfigurationController.getGasStationConfiguration({
+    const configuration = await ConfigurationController.getConfiguration({
       fuelType: supply.combustivel,
+      companyId: account.companyId,
       gasStationId: supply.gasStationId
     })
 
     if (!configuration) {
       res.status(422).send({
         code: 422,
-        result: 'Nenhuma configuraçào cadastrada para esse posto ou tipo do combustível.'
+        result: 'Nenhuma configuraçào cadastrada para a empresa do motorista, posto ou tipo do combustível.'
       })
       return
     }
+
+    const valueDiscounted = calcPercentage(supply.valor, configuration.taxaGasola)
+    const taxedValue = supply.valor - valueDiscounted
 
     const today = new Date()
     await supply.update({
       status: SUPPLY_STATUS.CONCLUDED,
       dataConclusao: today,
+      prazoPagamento: configuration.prazoPagamentoGasola,
       dataPagamento: addDays(today, configuration.prazoPagamentoGasola),
+      taxaGasola: configuration.taxaGasola,
+      valorTaxado: taxedValue
     })
 
     const supplyPrice = supply.valor - supply.totalCreditos
