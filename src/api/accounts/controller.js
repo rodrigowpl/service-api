@@ -256,7 +256,10 @@ module.exports = {
       where: { id: accountId },
       include: [{
         model: User,
-        as: 'users'
+        as: 'users',
+        where: {
+          ativado: ACTIVED
+        }
       }]
     })
 
