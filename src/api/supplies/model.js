@@ -29,6 +29,18 @@ module.exports = sequelize => (
     valor: {
       type: DataTypes.INTEGER
     },
+    usuario: {
+      type: DataTypes.STRING,
+    },
+    posto: {
+      type: DataTypes.STRING
+    },
+    bandeira: {
+      type: DataTypes.STRING
+    },
+    endereco: {
+      type: DataTypes.STRING
+    },
     status: {
       type: DataTypes.INTEGER,
       defaultValue: SUPPLY_STATUS.PENDENT

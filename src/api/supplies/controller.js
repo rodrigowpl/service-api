@@ -43,9 +43,13 @@ module.exports = {
     const totalLiters = valor / fuelValue
     const totalCredits = Math.round((totalLiters * fuelCredit) * 100)
 
+    const user = await User.findOne({
+      where: { id: idUsuario }
+    })
+
     const supply = await Supply.create({
       codigo: generatePinCode(8),
-      userId: idUsuario,
+      userId: user.id,
       gasStationId: idPosto,
       valor,
       combustivel,
@@ -53,7 +57,11 @@ module.exports = {
       placa,
       token,
       totalLitros: totalLiters,
-      totalCreditos: totalCredits
+      totalCreditos: totalCredits,
+      usuario: user.nome,
+      posto: gasStation.nome,
+      bandeira: gasStation.bandeira,
+      endereco: gasStation.endereco,
     })
 
     const response = {
