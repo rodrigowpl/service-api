@@ -90,9 +90,8 @@ module.exports = {
       }
     }
 
-    let gasStationWhere = {}
     if (bandeira) {
-      gasStationWhere = {
+      where = {
         bandeira: {
           [Op.iLike]: `%${bandeira}%`
         }
@@ -101,11 +100,8 @@ module.exports = {
 
     const { count, rows: supplies } = await Supply.findAndCountAll({
       where,
+      include: [User, GasStation],
       order: [['data_conclusao', 'DESC']],
-      include: [User, {
-        model: GasStation,
-        where: gasStationWhere
-      }],
       ...buildPaginatedQuery({ page, pageSize })
     })
 
