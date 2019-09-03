@@ -28,15 +28,26 @@ module.exports = {
     } = req.query
 
     const account = await Account.findOne({
-      where: { id: idConta }
+      where: { id: idConta },
+      include: [{
+        model: GasStation,
+        as: 'gasStations'
+      }]
     })
 
     let where = {
       status: SUPPLY_STATUS.CONCLUDED
     }
 
-    // TODO deve filtrar pelos postos da conta?
-    if (account.gasStationId) {
+    const allGasStationsIds = account.gasStations.map(({ id }) => id)
+    if (allGasStationsIds.length > 0) {
+      where = {
+        ...where,
+        gasStationId: {
+          [Op.in]: allGasStationsIds
+        }
+      }
+    } else {
       where = {
         ...where,
         gasStationId: account.gasStationId
