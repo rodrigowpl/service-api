@@ -8,8 +8,6 @@ const { generateRandomToken, generatePinCode } = require('../../helpers/token')
 const { humanizeDateTime } = require('../../helpers/date')
 const { getCurrencyFormattedByCents } = require('../../helpers/number')
 
-const { BALANCE_TYPE } = require('../users/balance-type')
-
 const ConfigurationController = require('../configurations/controller')
 
 const { SUPPLY_STATUS } = require('./supply-status')
@@ -118,11 +116,15 @@ module.exports = {
       dataPagamento: addDays(today, configuration.prazoPagamentoGasola),
     })
 
-    const subtractValue = supply.valor - supply.totalCreditos
+    const supplyPrice = supply.valor - supply.totalCreditos
 
-    if (user.tipoSaldo === BALANCE_TYPE.SHARED) {
+    if (user.saldo) {
+      await user.update({
+        saldo: user.saldo - supplyPrice
+      })
+    } else {
       await account.update({
-        saldo: account.saldo - subtractValue
+        saldo: account.saldo - supplyPrice
       })
     }
 
