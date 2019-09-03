@@ -215,9 +215,9 @@ module.exports = {
         logradouro: gasStation.logradouro,
         data: humanizeDateTime(dataConclusao),
         combustivel: camelCase(combustivel, { pascalCase: true }),
-        totalLitros,
+        totalLitros: `${totalLitros.toFixed(2)} litros`,
         valorAbastecimento: getCurrencyFormattedByCents(valor),
-        valorEmCreditos: getCurrencyFormattedByCents(totalCreditos)
+        valorEmCreditos: `${getCurrencyFormattedByCents(totalCreditos)} ganho em créditos`
       }
     })
 
