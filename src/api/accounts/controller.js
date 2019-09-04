@@ -202,8 +202,6 @@ module.exports = {
           gasStationId: gasStation.id
         })
 
-        console.log(gasStation.id)
-
         return {
           id: gasStation.id,
           habilitado: await GasStationCompanyController.getGasStationEnable(accountId, gasStation.id),
