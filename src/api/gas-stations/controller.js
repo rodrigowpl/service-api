@@ -1,4 +1,4 @@
-const { User, GasStation, Account } = require('../models')
+const { User, GasStation, Company } = require('../models')
 
 const { formatHour } = require('../../helpers/date')
 const { ACTIVED, DEACTIVED } = require('../../helpers/constants')
@@ -36,8 +36,8 @@ module.exports = {
       where: { id: userId }
     })
 
-    const { gasStations, companyId } = await Account.findOne({
-      where: { id: user.accountId },
+    const company = await Company.findOne({
+      where: { id: user.companyId },
       include: [{
         model: GasStation,
         as: 'gasStations',
@@ -48,13 +48,13 @@ module.exports = {
     })
 
     const response = await Promise.all(
-      gasStations.map(async (gasStation) => {
+      company.gasStations.map(async (gasStation) => {
         const {
           gasolineConfiguration,
           etanolConfiguration,
           dieselConfiguration
         } = await ConfigurationController.getAllFuelsConfigurations({
-          companyId,
+          companyId: company.id,
           gasStationId: gasStation.id
         })
 

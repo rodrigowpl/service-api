@@ -25,24 +25,30 @@ module.exports = {
       pageSize
     } = req.query
 
-    const account = await Account.findOne({
-      where: { id: idConta },
-      include: [{
-        model: GasStation,
-        as: 'gasStations'
-      }]
-    })
-
     let where = {
       status: SUPPLY_STATUS.CONCLUDED
     }
 
-    const allGasStationsIds = account.gasStations.map(({ id }) => id)
-    if (allGasStationsIds.length > 0) {
-      where = {
-        ...where,
-        gasStationId: {
-          [Op.in]: allGasStationsIds
+    const account = await Account.findOne({
+      where: { id: idConta }
+    })
+
+    if (account.companyId) {
+      const company = await Company.findOne({
+        include: [{
+          model: GasStation,
+          as: 'gasStations'
+        }],
+        where: { id: account.companyId }
+      })
+
+      const allGasStationsIds = company.gasStations.map(({ id }) => id)
+      if (allGasStationsIds.length > 0) {
+        where = {
+          ...where,
+          gasStationId: {
+            [Op.in]: allGasStationsIds
+          }
         }
       }
     } else {
@@ -109,10 +115,10 @@ module.exports = {
         const user = supply.user
         const gasStation = supply.gasStation
 
-        const { company } = await Account.findOne({
+        const companyUser = await Company.findOne({
           include: [Company],
           where: {
-            id: user.accountId
+            id: user.companyId
           }
         })
 
@@ -129,7 +135,7 @@ module.exports = {
           bandeiraPosto: supply.bandeira,
           enderecoPosto: supply.endereco,
           quilometragem: formatMiles(supply.km),
-          empresa: company.nome,
+          empresa: companyUser.nome,
           taxaGasola: `${supply.taxaGasola}%`,
           totalLitros: supply.totalLitros.toFixed(2),
           valorReceber: getCurrencyFormattedByCents(supply.valorTaxado),
