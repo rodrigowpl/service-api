@@ -82,7 +82,7 @@ module.exports = {
       senha: passwordEncrypted,
       cpf,
       placa,
-      accountId: idEmpresa
+      companyId: idEmpresa
     })
 
     res.send(user)

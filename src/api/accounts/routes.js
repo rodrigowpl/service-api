@@ -1,7 +1,7 @@
 const express = require('express')
 
 const AccountController = require('./controller')
-const GasStationAccountController = require('../gas-stations-accounts/controller')
+const GasStationCompanyController = require('../gas-stations-companies/controller')
 const CompanyController = require('../companies/controller')
 
 const router = express.Router()
@@ -18,6 +18,6 @@ router.get('/:accountId/abastecimentos', AccountController.getAllSupplies)
 router.get('/:accountId/usuarios', CompanyController.getAllUsers)
 router.get('/:accountId/saldo', CompanyController.getBudget)
 
-router.post('/habilitarPostos', GasStationAccountController.enableOrDisable)
+router.post('/habilitarPostos', GasStationCompanyController.enableOrDisable)
 
 module.exports = router

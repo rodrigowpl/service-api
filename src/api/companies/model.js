@@ -14,10 +14,6 @@ module.exports = sequelize => (
     nome: {
       type: DataTypes.STRING
     },
-    ativado: {
-      type: DataTypes.INTEGER,
-      defaultValue: ACTIVED
-    },
     cnpj: {
       type: DataTypes.STRING
     },
@@ -50,7 +46,11 @@ module.exports = sequelize => (
     totalGastoDia: {
       type: DataTypes.INTEGER,
       defaultValue: 0
-    }
+    },
+    ativado: {
+      type: DataTypes.INTEGER,
+      defaultValue: ACTIVED
+    },
   }, {
     tableName: 'company'
   })

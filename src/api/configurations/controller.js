@@ -65,7 +65,7 @@ module.exports = {
 
     const configurationUpdated = await configuration.update({
       combustivel,
-      valorVenda: Math.round(valorVenda),
+      valorVenda: valorVenda ? Math.round(valorVenda) : configuration.valorVenda,
       taxaGasola,
       prazoPagamentoCliente,
       prazoPagamentoGasola,

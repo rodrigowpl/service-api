@@ -1,7 +1,7 @@
 const { Op } = require('sequelize')
 const R = require('ramda')
 
-const { Company, User } = require('../models')
+const { Company, User, Account } = require('../models')
 
 const { ACTIVED, DEACTIVED } = require('../../helpers/constants')
 const { getCurrencyFormattedByCents } = require('../../helpers/number')
@@ -55,12 +55,12 @@ module.exports = {
     const { accountId } = req.params
     const { codigo, nome, cpf, placa } = req.query
 
-    const company = await Company.findOne({
+    const account = await Account.findOne({
       where: { accountId }
     })
 
     let where = {
-      companyId: company.id,
+      companyId: account.companyId,
       ativado: ACTIVED
     }
 
@@ -129,8 +129,12 @@ module.exports = {
   getBudget: async (req, res) => {
     const { accountId } = req.params
 
+    const account = await Account.findOne({
+      where: { id: accountId }
+    })
+
     const company = await Company.findOne({
-      where: { accountId },
+      where: { id: account.companyId },
       include: [{
         model: User,
         as: 'users',

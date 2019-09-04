@@ -11,7 +11,7 @@ const { generateJWTToken } = require('../../helpers/token')
 const { humanizeDateTime, formatHour } = require('../../helpers/date')
 const { ACTIVED, DEACTIVED } = require('../../helpers/constants')
 
-const GasStationAccountController = require('../gas-stations-accounts/controller')
+const GasStationCompanyController = require('../gas-stations-companies/controller')
 const ConfigurationController = require('../configurations/controller')
 
 module.exports = {
@@ -206,7 +206,7 @@ module.exports = {
 
         return {
           id: gasStation.id,
-          habilitado: await GasStationAccountController.getGasStationEnable(accountId, gasStation.id),
+          habilitado: await GasStationCompanyController.getGasStationEnable(accountId, gasStation.id),
           bandeira: gasStation.bandeira,
           nome: gasStation.nome,
           endereco: gasStation.endereco,
