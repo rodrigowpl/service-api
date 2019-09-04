@@ -3,30 +3,18 @@ const { User, GasStation, Account } = require('../models')
 const { formatHour } = require('../../helpers/date')
 const { ACTIVED, DEACTIVED } = require('../../helpers/constants')
 
-const normalizeResponse = (gasStation) => ({
-  id: gasStation.id,
-  nome: gasStation.nome,
-  bandeira: gasStation.bandeira,
-  cidade: gasStation.cidade,
-  bairro: gasStation.bairro,
-  logradouro: gasStation.logradouro,
-  banco: gasStation.banco,
-  agencia: gasStation.agencia,
-  conta: gasStation.conta,
-  cnpj: gasStation.cnpj,
-  geoloc: {
-    latitude: gasStation.latitude,
-    longitude: gasStation.longitude
-  },
-  gasolina: gasStation.gasolina / 100,
-  diesel: gasStation.diesel / 100,
-  etanol: gasStation.etanol / 100,
-  ganhoGasolina: gasStation.ganhoGasolina,
-  ganhoDiesel: gasStation.ganhoDiesel,
-  ganhoEtanol: gasStation.ganhoEtanol,
-  horarioAtendimentoInicio: formatHour(gasStation.horarioAtendimentoInicio),
-  horarioAtendimentoFim: formatHour(gasStation.horarioAtendimentoFim)
-})
+const ConfigurationController = require('../configurations/controller')
+
+const normalizeResponse = (gasStation) => (
+  Object.assign(gasStation.toJSON(), {
+    horarioAtendimentoInicio: formatHour(gasStation.horarioAtendimentoInicio),
+    horarioAtendimentoFim: formatHour(gasStation.horarioAtendimentoFim),
+    geoloc: {
+      latitude: gasStation.latitude,
+      longitude: gasStation.longitude
+    }
+  })
+)
 
 module.exports = {
   getAll: async (_, res) => {
@@ -60,7 +48,27 @@ module.exports = {
       }]
     })
 
-    const response = gasStations.map(normalizeResponse)
+    const response = await Promise.all(
+      gasStations.map(async (gasStation) => {
+        const {
+          gasolineConfiguration,
+          etanolConfiguration,
+          dieselConfiguration
+        } = await ConfigurationController.getAllFuelsConfigurations({
+          companyId: user.companyId,
+          gasStationId: gasStation.id
+        })
+
+        return Object.assign(normalizeResponse(gasStation), {
+          gasolina: gasolineConfiguration.valorVenda / 100,
+          diesel: dieselConfiguration.valorVenda / 100,
+          etanol: etanolConfiguration.valorVenda / 100,
+          ganhoGasolina: gasolineConfiguration.desconto,
+          ganhoDiesel: dieselConfiguration.desconto,
+          ganhoEtanol: etanolConfiguration.desconto,
+        })
+      })
+    )
 
     res.send(response)
   },

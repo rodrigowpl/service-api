@@ -12,7 +12,8 @@ const { humanizeDateTime, formatHour } = require('../../helpers/date')
 const { ACTIVED, DEACTIVED } = require('../../helpers/constants')
 const { getCurrencyFormattedByCents } = require('../../helpers/number')
 
-const gasStationAccountController = require('../gas-stations-accounts/controller')
+const GasStationAccountController = require('../gas-stations-accounts/controller')
+const ConfigurationController = require('../configurations/controller')
 
 module.exports = {
   getAll: async (req, res) => {
@@ -151,24 +152,35 @@ module.exports = {
       }
     }
 
-    const gasStations = await GasStation.findAll({
-      where
+    const gasStations = await GasStation.findAll({ where })
+
+    const account = await Account.findOne({
+      where: { id: accountId }
     })
 
     const response = await Promise.all(
       gasStations.map(async (gasStation) => {
+        const {
+          gasolineConfiguration,
+          etanolConfiguration,
+          dieselConfiguration
+        } = await ConfigurationController.getAllFuelsConfigurations({
+          companyId: account.companyId,
+          gasStationId: gasStation.id
+        })
+
         return {
           id: gasStation.id,
-          habilitado: await gasStationAccountController.getGasStationEnable(accountId, gasStation.id),
+          habilitado: await GasStationAccountController.getGasStationEnable(accountId, gasStation.id),
           bandeira: gasStation.bandeira,
           nome: gasStation.nome,
           endereco: gasStation.endereco,
-          gasolina: gasStation.gasolina,
-          ganhoGasolina: gasStation.ganhoGasolina,
-          diesel: gasStation.diesel,
-          ganhoDiesel: gasStation.ganhoDiesel,
-          etanol: gasStation.etanol,
-          ganhoEtanol: gasStation.ganhoEtanol,
+          gasolina: gasolineConfiguration.valorVenda,
+          ganhoGasolina: gasolineConfiguration.desconto,
+          diesel: dieselConfiguration.valorVenda,
+          ganhoDiesel: dieselConfiguration.desconto,
+          etanol: etanolConfiguration.valorVenda,
+          ganhoEtanol: etanolConfiguration.desconto,
           latitude: gasStation.latitude,
           longitude: gasStation.longitude
         }

@@ -2,6 +2,8 @@ const { Configuration, Company, GasStation } = require('../models')
 
 const { ACTIVED, DEACTIVED } = require('../../helpers/constants')
 
+const { FUEL_TYPE } = require('../supplies/fuel_type')
+
 const normalizeResponse = (configuration) => ({
   id: configuration.id,
   combustivel: configuration.combustivel,
@@ -111,5 +113,36 @@ module.exports = {
     })
 
     return configuration
+  },
+
+  getAllFuelsConfigurations: async ({ gasStationId, companyId }) => {
+    const gasolineConfiguration = await Configuration.findAll({
+      where: {
+        combustivel: FUEL_TYPE.GASOLINE,
+        companyId,
+        gasStationId,
+        ativado: ACTIVED
+      }
+    })
+
+    const etanolConfiguration = await Configuration.findAll({
+      where: {
+        combustivel: FUEL_TYPE.ETHANOL,
+        companyId,
+        gasStationId,
+        ativado: ACTIVED
+      }
+    })
+
+    const dieselConfiguration = await Configuration.findAll({
+      where: {
+        combustivel: FUEL_TYPE.DIESEL,
+        companyId,
+        gasStationId,
+        ativado: ACTIVED
+      }
+    })
+
+    return { gasolineConfiguration, etanolConfiguration, dieselConfiguration }
   }
 }
