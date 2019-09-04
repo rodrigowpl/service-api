@@ -3,14 +3,13 @@ const bcrypt = require('bcrypt')
 const R = require('ramda')
 const { startOfDay, endOfDay } = require('date-fns')
 
-const { Account, GasStation, User, Supply } = require('../models')
+const { Account, GasStation, Supply } = require('../models')
 
 const { SUPPLY_STATUS } = require('../supplies/supply-status')
 
 const { generateJWTToken } = require('../../helpers/token')
 const { humanizeDateTime, formatHour } = require('../../helpers/date')
 const { ACTIVED, DEACTIVED } = require('../../helpers/constants')
-const { getCurrencyFormattedByCents } = require('../../helpers/number')
 
 const GasStationAccountController = require('../gas-stations-accounts/controller')
 const ConfigurationController = require('../configurations/controller')
@@ -291,34 +290,6 @@ module.exports = {
     res.send({
       emAndamento: normalize('pendent', pendentSupplies),
       concluido: normalize('concluded', concludedSupplies)
-    })
-  },
-
-  getBudget: async (req, res) => {
-    const { accountId } = req.params
-
-    const account = await Account.findOne({
-      where: { id: accountId },
-      include: [{
-        model: User,
-        as: 'users',
-        where: {
-          ativado: ACTIVED
-        }
-      }]
-    })
-
-    const allUsersValues = account.users.map(({ saldo }) => saldo)
-
-    const totalUsersBudget = R.sum(allUsersValues)
-
-    const accountBudget = account.saldo
-    const sharedBudget = accountBudget - totalUsersBudget
-
-    res.send({
-      saldo: getCurrencyFormattedByCents(accountBudget),
-      compartilhado: getCurrencyFormattedByCents(sharedBudget),
-      especifico: getCurrencyFormattedByCents(totalUsersBudget)
     })
   }
 }

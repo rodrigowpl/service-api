@@ -1,7 +1,5 @@
 const { DataTypes } = require('sequelize')
 
-const { ACCOUNT_TYPE } = require('./account-type')
-
 const { ACTIVED } = require('../../helpers/constants')
 
 module.exports = sequelize => (
@@ -20,42 +18,9 @@ module.exports = sequelize => (
     senha: {
       type: DataTypes.STRING
     },
-    cnpj: {
-      type: DataTypes.STRING
-    },
-    saldo: {
-      type: DataTypes.INTEGER
-    },
-    limiteDiario: {
-      type: DataTypes.INTEGER
-    },
-    telefone: {
-      type: DataTypes.STRING,
-      allowNull: true
-    },
-    banco: {
-      type: DataTypes.STRING
-    },
-    agencia: {
-      type: DataTypes.STRING
-    },
-    conta: {
-      type: DataTypes.STRING
-    },
-    tipoConta: {
-      type: DataTypes.STRING,
-      defaultValue: ACCOUNT_TYPE.PRE
-    },
     ativado: {
       type: DataTypes.INTEGER,
       defaultValue: ACTIVED
-    },
-    dataUltimoAbastecimento: {
-      type: DataTypes.DATE
-    },
-    totalGastoDia: {
-      type: DataTypes.INTEGER,
-      defaultValue: 0
     }
   }, {
     tableName: 'account'

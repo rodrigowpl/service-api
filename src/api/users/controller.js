@@ -1,4 +1,3 @@
-const { Op } = require('sequelize')
 const bcrypt = require('bcrypt')
 
 const { User, Account } = require('../models')
@@ -72,7 +71,7 @@ module.exports = {
   },
 
   create: async (req, res) => {
-    const { nome, email, senha, cpf, placa, idConta } = req.body
+    const { nome, email, senha, cpf, placa, idEmpresa } = req.body
 
     const passwordEncrypted = await bcrypt.hash(senha, 12)
     const user = await User.create({
@@ -83,7 +82,7 @@ module.exports = {
       senha: passwordEncrypted,
       cpf,
       placa,
-      accountId: idConta
+      accountId: idEmpresa
     })
 
     res.send(user)
@@ -158,60 +157,5 @@ module.exports = {
     return res.send({
       saldo: user.saldo !== null ? `${getCurrencyFormattedByCents(user.saldo)}` : null
     })
-  },
-
-  getAllByAccount: async (req, res) => {
-    const { accountId } = req.params
-    const { codigo, nome, cpf, placa } = req.query
-
-    let where = {
-      accountId,
-      ativado: ACTIVED
-    }
-
-    if (codigo) {
-      where = {
-        ...where,
-        codigo: {
-          [Op.iLike]: `%${codigo}%`
-        }
-      }
-    }
-
-    if (nome) {
-      where = {
-        ...where,
-        nome: {
-          [Op.iLike]: `%${nome}%`
-        }
-      }
-    }
-
-    if (cpf) {
-      where = {
-        ...where,
-        cpf: {
-          [Op.iLike]: `%${cpf}%`
-        }
-      }
-    }
-
-    if (placa) {
-      where = {
-        ...where,
-        placa: {
-          [Op.iLike]: `%${placa}%`
-        }
-      }
-    }
-
-    const users = await User.findAll({
-      where,
-      attributes: DEFAULT_ATTRIBUTES
-    })
-
-    const normalized = users.map(normalizeResponse)
-
-    res.send(normalized)
   }
 }

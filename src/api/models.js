@@ -15,18 +15,18 @@ const Configuration = require('./configurations/model')(SequelizeInstance)
 Supply.belongsTo(User)
 Supply.belongsTo(GasStation)
 
-User.belongsTo(Account)
+User.belongsTo(Company)
 User.hasMany(Supply, { as: 'supplies' })
 
 Account.belongsTo(Company)
 Account.belongsTo(GasStation)
-Account.hasMany(User, { as: 'users' })
-Account.belongsToMany(GasStation, { as: 'gasStations', through: GasStationAccounts })
 
 GasStationAccounts.belongsTo(GasStation)
 GasStationAccounts.belongsTo(Account)
 
 Company.hasMany(Account, { as: 'accounts' })
+Company.hasMany(User, { as: 'users' })
+Company.belongsToMany(GasStation, { as: 'gasStations', through: GasStationAccounts })
 
 Configuration.belongsTo(GasStation)
 Configuration.belongsTo(Company)

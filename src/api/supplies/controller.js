@@ -156,13 +156,13 @@ module.exports = {
       where: { id: supply.user.id }
     })
 
-    const account = await Account.findOne({
-      where: { id: user.accountId }
+    const company = await Account.findOne({
+      where: { accountId: user.accountId }
     })
 
     const configuration = await ConfigurationController.getConfiguration({
       fuelType: supply.combustivel,
-      companyId: account.companyId,
+      companyId: company.id,
       gasStationId: supply.gasStationId
     })
 
@@ -194,13 +194,13 @@ module.exports = {
         saldo: user.saldo - supplyPrice
       })
     } else {
-      await account.update({
-        saldo: account.saldo - supplyPrice
+      await company.update({
+        saldo: company.saldo - supplyPrice
       })
     }
 
-    await account.update({
-      totalGastoDia: account.totalGastoDia + supplyPrice
+    await company.update({
+      totalGastoDia: company.totalGastoDia + supplyPrice
     })
 
     await user.update({
