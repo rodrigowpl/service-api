@@ -1,7 +1,7 @@
 const { Op } = require('sequelize')
 const bcrypt = require('bcrypt')
 
-const { User } = require('../models')
+const { User, Account } = require('../models')
 
 const { generateJWTToken, generatePinCode } = require('../../helpers/token')
 const { ACTIVED, DEACTIVED } = require('../../helpers/constants')
@@ -56,11 +56,15 @@ module.exports = {
       return
     }
 
+    const account = await Account.findOne({
+      where: { id: user.accountId }
+    })
+
     const token = generateJWTToken(email)
     const response = {
       id: user.id,
       nome: user.nome,
-      tipoConta: user.tipoConta,
+      tipoConta: account.tipoConta,
       placa: user.placa,
       token
     }
