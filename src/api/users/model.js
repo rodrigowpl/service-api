@@ -1,8 +1,5 @@
 const { DataTypes } = require('sequelize')
 
-const { ACCOUNT_TYPE } = require('./account-type')
-const { BALANCE_TYPE } = require('./balance-type')
-
 const { ACTIVED } = require('../../helpers/constants')
 
 module.exports = sequelize => (
@@ -38,20 +35,12 @@ module.exports = sequelize => (
       type: DataTypes.STRING,
       allowNull: true
     },
-    tipoConta: {
-      type: DataTypes.STRING,
-      defaultValue: ACCOUNT_TYPE.PRE
-    },
     ativado: {
       type: DataTypes.INTEGER,
       defaultValue: ACTIVED
     },
     saldo: {
       type: DataTypes.INTEGER
-    },
-    tipoSaldo: {
-      type: DataTypes.STRING,
-      defaultValue: BALANCE_TYPE.SHARED
     },
     limiteGastoDiario: {
       type: DataTypes.INTEGER,
