@@ -1,6 +1,6 @@
 const { DataTypes } = require('sequelize')
 
-const { FUEL_TYPE } = require('./fuel_type')
+const { FUEL_TYPE } = require('./fuel-type')
 const { SUPPLY_STATUS } = require('./supply-status')
 
 module.exports = sequelize => (

@@ -2,7 +2,7 @@ const { Configuration, Company, GasStation } = require('../models')
 
 const { ACTIVED, DEACTIVED } = require('../../helpers/constants')
 
-const { FUEL_TYPE } = require('../supplies/fuel_type')
+const { FUEL_TYPE } = require('../supplies/fuel-type')
 
 const normalizeResponse = (configuration) => ({
   id: configuration.id,
