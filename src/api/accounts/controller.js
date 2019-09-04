@@ -157,7 +157,9 @@ module.exports = {
     const { accountId } = req.params
     const { bandeira, cidade, bairro } = req.query
 
-    let where = {}
+    let where = {
+      ativado: ACTIVED
+    }
 
     if (bandeira) {
       where = {
@@ -200,6 +202,8 @@ module.exports = {
           companyId: account.companyId,
           gasStationId: gasStation.id
         })
+
+        console.log(gasStation.id)
 
         return {
           id: gasStation.id,
