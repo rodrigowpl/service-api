@@ -49,6 +49,13 @@ module.exports = sequelize => (
     limiteGastoMensal: {
       type: DataTypes.INTEGER,
       allowNull: true
+    },
+    dataUltimoAbastecimento: {
+      type: DataTypes.DATE
+    },
+    totalGastoDia: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0
     }
   }, {
     tableName: 'user'

@@ -26,6 +26,9 @@ module.exports = sequelize => (
     saldo: {
       type: DataTypes.INTEGER
     },
+    limiteDiario: {
+      type: DataTypes.INTEGER
+    },
     telefone: {
       type: DataTypes.STRING,
       allowNull: true
@@ -46,6 +49,13 @@ module.exports = sequelize => (
     ativado: {
       type: DataTypes.INTEGER,
       defaultValue: ACTIVED
+    },
+    dataUltimoAbastecimento: {
+      type: DataTypes.DATE
+    },
+    totalGastoDia: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0
     }
   }, {
     tableName: 'account'

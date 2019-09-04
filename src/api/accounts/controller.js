@@ -27,7 +27,21 @@ module.exports = {
   },
 
   create: async (req, res) => {
-    const { nome, email, senha, cnpj, saldo, banco, telefone, agencia, conta, idEmpresa, idPosto } = req.body
+    const {
+      nome,
+      email,
+      senha,
+      cnpj,
+      saldo,
+      banco,
+      tipoConta,
+      limiteDiario,
+      telefone,
+      agencia,
+      conta,
+      idEmpresa,
+      idPosto
+    } = req.body
     const passwordEncrypted = await bcrypt.hash(senha, 12)
 
     const account = await Account.create({
@@ -40,6 +54,8 @@ module.exports = {
       agencia,
       telefone,
       conta,
+      tipoConta,
+      limiteDiario,
       companyId: idEmpresa,
       gasStationId: idPosto
     })
@@ -49,7 +65,20 @@ module.exports = {
 
   update: async (req, res) => {
     const { accountId } = req.params
-    const { nome, email, cnpj, saldo, banco, agencia, telefone, conta, idEmpresa, idPosto } = req.body
+    const {
+      nome,
+      email,
+      cnpj,
+      saldo,
+      banco,
+      agencia,
+      telefone,
+      conta,
+      tipoConta,
+      limiteDiario,
+      idEmpresa,
+      idPosto
+    } = req.body
 
     const account = await Account.findOne({
       where: {
@@ -66,6 +95,8 @@ module.exports = {
       telefone,
       agencia,
       conta,
+      tipoConta,
+      limiteDiario,
       companyId: idEmpresa,
       gasStationId: idPosto
     })
@@ -217,14 +248,13 @@ module.exports = {
   getAllSupplies: async (req, res) => {
     const { accountId } = req.params
 
-    const users = await User.findAll({ where: { accountId } })
-    const allUsersIds = users.reduce((acc, curr) => acc.concat(curr.id), [])
+    const account = await Account.findOne({
+      where: { id: accountId }
+    })
 
     const pendentSupplies = await Supply.findAll({
       where: {
-        userId: {
-          [Op.in]: allUsersIds
-        },
+        gasStationId: account.gasStationId,
         status: SUPPLY_STATUS.PENDENT,
         createdAt: {
           [Op.between]: [startOfDay(new Date()), endOfDay(new Date())]
@@ -235,9 +265,7 @@ module.exports = {
 
     const concludedSupplies = await Supply.findAll({
       where: {
-        userId: {
-          [Op.in]: allUsersIds
-        },
+        gasStationId: account.gasStationId,
         status: SUPPLY_STATUS.CONCLUDED,
         dataConclusao: {
           [Op.between]: [startOfDay(new Date()), endOfDay(new Date())]

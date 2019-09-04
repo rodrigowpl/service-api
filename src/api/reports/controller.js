@@ -90,6 +90,7 @@ module.exports = {
 
     if (bandeira) {
       where = {
+        ...where,
         bandeira: {
           [Op.iLike]: `%${bandeira}%`
         }

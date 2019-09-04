@@ -1,5 +1,5 @@
 const { Op } = require('sequelize')
-const { addDays } = require('date-fns')
+const { addDays, isToday } = require('date-fns')
 const camelCase = require('camelcase')
 
 const { Supply, GasStation, User, Account } = require('../models')
@@ -39,6 +39,65 @@ module.exports = {
         result: 'Nenhuma configuraçào cadastrada para a empresa do motorista, posto ou tipo do combustível.'
       })
       return
+    }
+
+    const account = await Account.findOne({
+      include: [{
+        model: User,
+        as: 'users'
+      }],
+      where: { id: user.accountId }
+    })
+
+    // Validação limite da conta
+    const totalAccount = account.totalGastoDia + valor
+    if (isToday(account.dataUltimoAbastecimento)) {
+      if (totalAccount > account.limiteDiario) {
+        res.status(422).send({
+          code: 422,
+          result: 'O limite diário foi excecido.'
+        })
+        return
+      }
+    } else {
+      if (valor > account.limiteDiario) {
+        res.status(422).send({
+          code: 422,
+          result: 'O limite diário foi excecido.'
+        })
+        return
+      } else {
+        const today = new Date()
+        await account.update({
+          dataUltimoAbastecimento: today,
+          totalGastoDia: 0
+        })
+      }
+    }
+
+    // Validação limite do usuário
+    if (isToday(user.dataUltimoAbastecimento)) {
+      if (totalAccount > user.limiteGastoDiario) {
+        res.status(422).send({
+          code: 422,
+          result: 'O limite diário foi excecido.'
+        })
+        return
+      }
+    } else {
+      if (valor > user.limiteGastoDiario) {
+        res.status(422).send({
+          code: 422,
+          result: 'O limite diário foi excecido.'
+        })
+        return
+      } else {
+        const today = new Date()
+        await user.update({
+          dataUltimoAbastecimento: today,
+          totalGastoDia: 0
+        })
+      }
     }
 
     const totalLiters = valor / configuration.valorVenda
@@ -139,6 +198,14 @@ module.exports = {
         saldo: account.saldo - supplyPrice
       })
     }
+
+    await account.update({
+      totalGastoDia: account.totalGastoDia + supplyPrice
+    })
+
+    await user.update({
+      totalGastoDia: user.totalGastoDia + supplyPrice
+    })
 
     res.send('Abastecimento efetuado com sucesso.')
   },
