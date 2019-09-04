@@ -116,7 +116,7 @@ module.exports = {
   },
 
   getAllFuelsConfigurations: async ({ gasStationId, companyId }) => {
-    const gasolineConfiguration = await Configuration.findAll({
+    const gasolineConfiguration = await Configuration.findOne({
       where: {
         combustivel: FUEL_TYPE.GASOLINE,
         companyId,
@@ -125,7 +125,7 @@ module.exports = {
       }
     })
 
-    const etanolConfiguration = await Configuration.findAll({
+    const etanolConfiguration = await Configuration.findOne({
       where: {
         combustivel: FUEL_TYPE.ETHANOL,
         companyId,
@@ -134,7 +134,7 @@ module.exports = {
       }
     })
 
-    const dieselConfiguration = await Configuration.findAll({
+    const dieselConfiguration = await Configuration.findOne({
       where: {
         combustivel: FUEL_TYPE.DIESEL,
         companyId,

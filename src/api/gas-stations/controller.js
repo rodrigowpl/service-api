@@ -36,15 +36,14 @@ module.exports = {
       where: { id: userId }
     })
 
-    const { gasStations } = await Account.findOne({
+    const { gasStations, companyId } = await Account.findOne({
       where: { id: user.accountId },
       include: [{
         model: GasStation,
         as: 'gasStations',
         where: {
           ativado: ACTIVED
-        },
-        required: true
+        }
       }]
     })
 
@@ -55,7 +54,7 @@ module.exports = {
           etanolConfiguration,
           dieselConfiguration
         } = await ConfigurationController.getAllFuelsConfigurations({
-          companyId: user.companyId,
+          companyId,
           gasStationId: gasStation.id
         })
 
