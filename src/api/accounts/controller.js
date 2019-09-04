@@ -16,6 +16,41 @@ const GasStationAccountController = require('../gas-stations-accounts/controller
 const ConfigurationController = require('../configurations/controller')
 
 module.exports = {
+  login: async (req, res) => {
+    const { email, senha } = req.body
+    const account = await Account.findOne({
+      where: { email }
+    })
+
+    if (!account) {
+      res.status(401).send({
+        status: 401,
+        result: 'Usuário inválido'
+      })
+
+      return
+    }
+
+    const isValidPassword = await bcrypt.compare(senha, account.senha)
+    if (!isValidPassword) {
+      res.status(401).send({
+        status: 401,
+        result: 'Senha inválida'
+      })
+
+      return
+    }
+
+    const token = generateJWTToken(email)
+    const response = {
+      id: account.id,
+      nome: account.nome,
+      tipoConta: account.tipoConta,
+      token
+    }
+    res.send(response)
+  },
+
   getAll: async (req, res) => {
     const accounts = await Account.findAll({
       where: {
@@ -116,40 +151,6 @@ module.exports = {
     })
 
     res.send('Desativado com sucesso')
-  },
-
-  login: async (req, res) => {
-    const { email, senha } = req.body
-    const account = await Account.findOne({
-      where: { email }
-    })
-
-    if (!account) {
-      res.status(401).send({
-        status: 401,
-        result: 'Usuário inválido'
-      })
-
-      return
-    }
-
-    const isValidPassword = await bcrypt.compare(senha, account.senha)
-    if (!isValidPassword) {
-      res.status(401).send({
-        status: 401,
-        result: 'Senha inválida'
-      })
-
-      return
-    }
-
-    const token = generateJWTToken(email)
-    const response = {
-      id: account.id,
-      nome: account.nome,
-      token
-    }
-    res.send(response)
   },
 
   getAllGasStations: async (req, res) => {
