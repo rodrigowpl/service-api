@@ -189,21 +189,25 @@ module.exports = {
 
     if (isToday(company.dataUltimoAbastecimento)) {
       await company.update({
-        totalGastoDia: company.totalGastoDia + supplyPrice
+        totalGastoDia: company.totalGastoDia + supplyPrice,
+        dataUltimoAbastecimento: today
       })
     } else {
       await company.update({
-        totalGastoDia: supplyPrice
+        totalGastoDia: supplyPrice,
+        dataUltimoAbastecimento: today
       })
     }
 
     if (isToday(user.dataUltimoAbastecimento)) {
       await user.update({
-        totalGastoDia: user.totalGastoDia + supplyPrice
+        totalGastoDia: user.totalGastoDia + supplyPrice,
+        dataUltimoAbastecimento: today
       })
     } else {
       await user.update({
-        totalGastoDia: supplyPrice
+        totalGastoDia: supplyPrice,
+        dataUltimoAbastecimento: today
       })
     }
 
