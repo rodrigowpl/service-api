@@ -31,7 +31,7 @@ module.exports = {
     })
 
     const totalSpentCompanyToday = company.totalGastoDia + valor
-    if (totalSpentCompanyToday > company.limiteGastoDiario || valor > company.limiteGastoDiario) {
+    if ((company.limiteGastoDiario && totalSpentCompanyToday > company.limiteGastoDiario) || valor > company.limiteGastoDiario) {
       res.status(422).send({
         code: 422,
         result: 'O limite diário da sua empresa foi excedido.'
@@ -40,7 +40,7 @@ module.exports = {
     }
 
     const totalSpentUserToday = user.totalGastoDia + valor
-    if (totalSpentUserToday > user.limiteGastoDiario || valor > user.limiteGastoDiario) {
+    if ((user.limiteGastoDiario && totalSpentUserToday > user.limiteGastoDiario) || valor > user.limiteGastoDiario) {
       res.status(422).send({
         code: 422,
         result: 'O seu limite diário foi excedido'
@@ -49,7 +49,7 @@ module.exports = {
     }
 
     const totalSpentUserMonth = user.totalGastoMes + valor
-    if (totalSpentUserMonth > user.limiteGastoMensal || valor > user.limiteGastoMensal) {
+    if ((user.limiteGastoMensal && totalSpentUserMonth > user.limiteGastoMensal) || valor > user.limiteGastoMensal) {
       res.status(422).send({
         code: 422,
         result: 'O seu limite mensal foi excedido'
