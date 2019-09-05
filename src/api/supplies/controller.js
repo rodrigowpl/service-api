@@ -20,8 +20,13 @@ const validateSupplyLimit = async ({ basis, model, supplyValue, message }, res) 
     'monthly': isSameMonth
   }
 
+  const limitField = {
+    'daily': model.limiteGastoDiario,
+    'monthly': model.limiteGastoMensal
+  }
+
   if (isPeriodValidation[basis](model.dataUltimoAbastecimento)) {
-    if (totalSuppliedValue > model.limiteGastoDiario) {
+    if (totalSuppliedValue > limitField) {
       res.status(422).send({
         code: 422,
         result: message
@@ -29,7 +34,7 @@ const validateSupplyLimit = async ({ basis, model, supplyValue, message }, res) 
       return
     }
   } else {
-    if (supplyValue > model.limiteGastoDiario) {
+    if (supplyValue > limitField) {
       res.status(422).send({
         code: 422,
         result: message
