@@ -64,6 +64,7 @@ module.exports = {
       email: acc.email,
       empresa: acc.company ? acc.company.nome : '-',
       posto: acc.gasStation ? acc.gasStation.nome : '-',
+      status: acc.ativado ? 'Ativado' : 'Inativado'
     }))
 
     res.send(normalize)
