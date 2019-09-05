@@ -1,3 +1,5 @@
+const numeral = require('numeral')
+
 const { Configuration, Company, GasStation } = require('../models')
 
 const { ACTIVED, DEACTIVED } = require('../../helpers/constants')
@@ -33,7 +35,7 @@ module.exports = {
 
     const configuration = await Configuration.create({
       combustivel,
-      valorVenda: Math.round(valorVenda),
+      valorVenda: numeral(valorVenda).multiply(100).value(),
       taxaGasola,
       prazoPagamentoCliente,
       prazoPagamentoGasola,
@@ -65,7 +67,7 @@ module.exports = {
 
     const configurationUpdated = await configuration.update({
       combustivel,
-      valorVenda: valorVenda ? Math.round(valorVenda) : configuration.valorVenda,
+      valorVenda: numeral(valorVenda).multiply(100).value(),
       taxaGasola,
       prazoPagamentoCliente,
       prazoPagamentoGasola,

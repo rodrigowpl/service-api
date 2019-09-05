@@ -1,5 +1,6 @@
 const { Op } = require('sequelize')
 const R = require('ramda')
+const numeral = require('numeral')
 
 const { Company, User, Account } = require('../models')
 
@@ -18,7 +19,10 @@ module.exports = {
   },
 
   create: async (req, res) => {
-    const company = await Company.create(req.body)
+    const company = await Company.create({
+      ...req.body,
+      saldo: numeral(req.body.saldo).multiply(100).value()
+    })
 
     res.send(company)
   },
@@ -32,7 +36,10 @@ module.exports = {
       }
     })
 
-    const companyUpdated = await company.update(req.body)
+    const companyUpdated = await company.update({
+      ...req.body,
+      saldo: numeral(req.body.saldo).multiply(100).value()
+    })
 
     res.send(companyUpdated)
   },

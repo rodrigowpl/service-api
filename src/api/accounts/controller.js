@@ -65,14 +65,6 @@ module.exports = {
       nome,
       email,
       senha,
-      cnpj,
-      saldo,
-      banco,
-      tipoConta,
-      limiteGastoDiario,
-      telefone,
-      agencia,
-      conta,
       idEmpresa,
       idPosto
     } = req.body
@@ -82,14 +74,6 @@ module.exports = {
       nome,
       email,
       senha: passwordEncrypted,
-      cnpj,
-      saldo,
-      banco,
-      agencia,
-      telefone,
-      conta,
-      tipoConta,
-      limiteGastoDiario,
       companyId: idEmpresa,
       gasStationId: idPosto
     })
@@ -102,14 +86,6 @@ module.exports = {
     const {
       nome,
       email,
-      cnpj,
-      saldo,
-      banco,
-      agencia,
-      telefone,
-      conta,
-      tipoConta,
-      limiteGastoDiario,
       idEmpresa,
       idPosto
     } = req.body
@@ -123,14 +99,6 @@ module.exports = {
     const accountUpdated = await account.update({
       nome,
       email,
-      cnpj,
-      saldo,
-      banco,
-      telefone,
-      agencia,
-      conta,
-      tipoConta,
-      limiteGastoDiario,
       companyId: idEmpresa,
       gasStationId: idPosto
     })
