@@ -71,7 +71,11 @@ module.exports = {
   },
 
   create: async (req, res) => {
-    const { nome, email, senha, cpf, placa, idEmpresa } = req.body
+    const { nome, email, senha, cpf, placa, idConta } = req.body
+
+    const account = await Account.findOne({
+      where: { id: idConta }
+    })
 
     const passwordEncrypted = await bcrypt.hash(senha, 12)
     const user = await User.create({
@@ -82,7 +86,7 @@ module.exports = {
       senha: passwordEncrypted,
       cpf,
       placa,
-      companyId: idEmpresa
+      companyId: account.companyId
     })
 
     res.send(user)
