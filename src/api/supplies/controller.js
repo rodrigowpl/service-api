@@ -64,8 +64,7 @@ module.exports = {
     }
 
     if (user.saldo) {
-      const totalSpentNow = user.totalGastoDia + valor
-      if (totalSpentNow > user.saldo) {
+      if (valor > user.saldo) {
         res.status(422).send({
           code: 422,
           result: 'Você não tem saldo suficiente'
