@@ -29,6 +29,7 @@ module.exports = {
 
   update: async (req, res) => {
     const { companyId } = req.params
+    const { saldo, limiteGastoDiario } = req.body
 
     const company = await Company.findOne({
       where: {
@@ -38,7 +39,8 @@ module.exports = {
 
     const companyUpdated = await company.update({
       ...req.body,
-      saldo: numeral(req.body.saldo).multiply(100).value()
+      saldo: saldo ? numeral(saldo).multiply(100).value() : null,
+      limiteGastoDiario: limiteGastoDiario ? numeral(limiteGastoDiario).multiply(100).value() : null
     })
 
     res.send(companyUpdated)
