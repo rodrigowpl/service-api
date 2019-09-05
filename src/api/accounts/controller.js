@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt')
 const R = require('ramda')
 const { startOfDay, endOfDay } = require('date-fns')
 
-const { Account, GasStation, Supply } = require('../models')
+const { Account, GasStation, Supply, Company } = require('../models')
 
 const { SUPPLY_STATUS } = require('../supplies/supply-status')
 
@@ -52,12 +52,21 @@ module.exports = {
 
   getAll: async (req, res) => {
     const accounts = await Account.findAll({
+      include: [Company, GasStation],
       where: {
         ativado: ACTIVED
       }
     })
 
-    res.send(accounts)
+    const normalize = accounts.map(acc => ({
+      id: acc.id,
+      nome: acc.nome,
+      email: acc.email,
+      empresa: acc.company ? acc.company.nome : '-',
+      posto: acc.gasStation ? acc.gasStation.nome : '-',
+    }))
+
+    res.send(normalize)
   },
 
   create: async (req, res) => {
