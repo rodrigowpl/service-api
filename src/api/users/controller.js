@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt')
 
-const { User, Account } = require('../models')
+const { User, Account, Company } = require('../models')
 
 const { generateJWTToken, generatePinCode } = require('../../helpers/token')
 const { ACTIVED, DEACTIVED } = require('../../helpers/constants')
@@ -55,15 +55,15 @@ module.exports = {
       return
     }
 
-    const account = await Account.findOne({
-      where: { id: user.accountId }
+    const company = await Company.findOne({
+      where: { id: user.companyId }
     })
 
     const token = generateJWTToken(email)
     const response = {
       id: user.id,
       nome: user.nome,
-      tipoConta: account.tipoConta,
+      tipoConta: company.tipoConta,
       placa: user.placa,
       token
     }
