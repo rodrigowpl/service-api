@@ -30,31 +30,37 @@ module.exports = {
       where: { id: user.companyId }
     })
 
-    const totalSpentCompanyToday = company.totalGastoDia + valor
-    if ((company.limiteGastoDiario && totalSpentCompanyToday > company.limiteGastoDiario) || valor > company.limiteGastoDiario) {
-      res.status(422).send({
-        code: 422,
-        result: 'O limite diário da sua empresa foi excedido.'
-      })
-      return
+    if (company.limiteGastoDiario) {
+      const totalSpentCompanyToday = company.totalGastoDia + valor
+      if (totalSpentCompanyToday > company.limiteGastoDiario || valor > company.limiteGastoDiario) {
+        res.status(422).send({
+          code: 422,
+          result: 'O limite diário da sua empresa foi excedido.'
+        })
+        return
+      }
     }
 
-    const totalSpentUserToday = user.totalGastoDia + valor
-    if ((user.limiteGastoDiario && totalSpentUserToday > user.limiteGastoDiario) || valor > user.limiteGastoDiario) {
-      res.status(422).send({
-        code: 422,
-        result: 'O seu limite diário foi excedido'
-      })
-      return
+    if (user.limiteGastoDiario) {
+      const totalSpentUserToday = user.totalGastoDia + valor
+      if (totalSpentUserToday > user.limiteGastoDiario || valor > user.limiteGastoDiario) {
+        res.status(422).send({
+          code: 422,
+          result: 'O seu limite diário foi excedido'
+        })
+        return
+      }
     }
 
-    const totalSpentUserMonth = user.totalGastoMes + valor
-    if ((user.limiteGastoMensal && totalSpentUserMonth > user.limiteGastoMensal) || valor > user.limiteGastoMensal) {
-      res.status(422).send({
-        code: 422,
-        result: 'O seu limite mensal foi excedido'
-      })
-      return
+    if (user.limiteGastoMensal) {
+      const totalSpentUserMonth = user.totalGastoMes + valor
+      if (totalSpentUserMonth > user.limiteGastoMensal || valor > user.limiteGastoMensal) {
+        res.status(422).send({
+          code: 422,
+          result: 'O seu limite mensal foi excedido'
+        })
+        return
+      }
     }
 
     if (user.saldo) {
