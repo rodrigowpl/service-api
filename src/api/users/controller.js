@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt')
+const numeral = require('numeral')
 
 const { User, Account, Company } = require('../models')
 
@@ -94,7 +95,7 @@ module.exports = {
 
   update: async (req, res) => {
     const { userId } = req.params
-    const { usuario, senha } = req.body
+    const { usuario, senha, saldo, limiteGastoMensal, limiteGastoDiario } = req.body
 
     const user = await User.findOne({
       attributes: DEFAULT_ATTRIBUTES,
@@ -108,6 +109,9 @@ module.exports = {
 
     const userUpdated = await user.update({
       ...req.body,
+      saldo: saldo ? numeral(saldo).multiply(100).value() : null,
+      limiteGastoMensal: limiteGastoMensal ? numeral(limiteGastoMensal).multiply(100).value() : null,
+      limiteGastoDiario: limiteGastoDiario ? numeral(limiteGastoDiario).multiply(100).value() : null,
       usuario,
       email: usuario,
       senha: passwordEncrypted || user.senha
@@ -127,9 +131,9 @@ module.exports = {
         })
 
         const userUpdated = await user.update({
-          saldo,
-          limiteGastoMensal,
-          limiteGastoDiario
+          saldo: saldo ? numeral(saldo).multiply(100).value() : null,
+          limiteGastoMensal: limiteGastoMensal ? numeral(limiteGastoMensal).multiply(100).value() : null,
+          limiteGastoDiario: limiteGastoDiario ? numeral(limiteGastoDiario).multiply(100).value() : null
         })
 
         return normalizeResponse(userUpdated)
