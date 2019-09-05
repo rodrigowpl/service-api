@@ -1,8 +1,8 @@
 const { Op } = require('sequelize')
-const { addDays, isToday } = require('date-fns')
+const { addDays, isToday, isSameMonth } = require('date-fns')
 const camelCase = require('camelcase')
 
-const { Supply, GasStation, User, Account } = require('../models')
+const { Supply, GasStation, User, Account, Company } = require('../models')
 
 const { generateRandomToken, generatePinCode } = require('../../helpers/token')
 const { humanizeDateTime } = require('../../helpers/date')
@@ -11,6 +11,39 @@ const { getCurrencyFormattedByCents, calcPercentage } = require('../../helpers/n
 const ConfigurationController = require('../configurations/controller')
 
 const { SUPPLY_STATUS } = require('./supply-status')
+
+const validateSupplyLimit = async ({ basis, model, supplyValue, message }, res) => {
+  const totalSuppliedValue = model.totalGastoDia + supplyValue
+
+  const isPeriodValidation = {
+    'daily': isToday,
+    'monthly': isSameMonth
+  }
+
+  if (isPeriodValidation[basis](model.dataUltimoAbastecimento)) {
+    if (totalSuppliedValue > model.limiteGastoDiario) {
+      res.status(422).send({
+        code: 422,
+        result: message
+      })
+      return
+    }
+  } else {
+    if (supplyValue > model.limiteGastoDiario) {
+      res.status(422).send({
+        code: 422,
+        result: message
+      })
+      return
+    } else {
+      const today = new Date()
+      await model.update({
+        dataUltimoAbastecimento: today,
+        totalGastoDia: 0
+      })
+    }
+  }
+}
 
 module.exports = {
   create: async (req, res) => {
@@ -23,13 +56,37 @@ module.exports = {
     })
 
     const user = await User.findOne({
-      include: [Account],
       where: { id: idUsuario }
     })
 
+    const company = await Company.findOne({
+      where: { id: user.companyId }
+    })
+
+    validateSupplyLimit({
+      basis: 'daily',
+      model: company,
+      supplyValue: valor,
+      message: 'O limite diário da sua empresa foi excecido.'
+    }, res)
+
+    validateSupplyLimit({
+      basis: 'daily',
+      model: user,
+      supplyValue: valor,
+      message: 'O seu limite diário foi excecido'
+    }, res)
+
+    validateSupplyLimit({
+      basis: 'monthly',
+      model: user,
+      supplyValue: valor,
+      message: 'O seu limite mensal foi excecido'
+    }, res)
+
     const configuration = await ConfigurationController.getConfiguration({
       fuelType: combustivel,
-      companyId: user.account.companyId,
+      companyId: company.id,
       gasStationId: gasStation.id
     })
 
@@ -39,65 +96,6 @@ module.exports = {
         result: 'Nenhuma configuraçào cadastrada para a empresa do motorista, posto ou tipo do combustível.'
       })
       return
-    }
-
-    const account = await Account.findOne({
-      include: [{
-        model: User,
-        as: 'users'
-      }],
-      where: { id: user.accountId }
-    })
-
-    // Validação limite da conta
-    const totalAccount = account.totalGastoDia + valor
-    if (isToday(account.dataUltimoAbastecimento)) {
-      if (totalAccount > account.limiteDiario) {
-        res.status(422).send({
-          code: 422,
-          result: 'O limite diário foi excecido.'
-        })
-        return
-      }
-    } else {
-      if (valor > account.limiteDiario) {
-        res.status(422).send({
-          code: 422,
-          result: 'O limite diário foi excecido.'
-        })
-        return
-      } else {
-        const today = new Date()
-        await account.update({
-          dataUltimoAbastecimento: today,
-          totalGastoDia: 0
-        })
-      }
-    }
-
-    // Validação limite do usuário
-    if (isToday(user.dataUltimoAbastecimento)) {
-      if (totalAccount > user.limiteGastoDiario) {
-        res.status(422).send({
-          code: 422,
-          result: 'O limite diário foi excecido.'
-        })
-        return
-      }
-    } else {
-      if (valor > user.limiteGastoDiario) {
-        res.status(422).send({
-          code: 422,
-          result: 'O limite diário foi excecido.'
-        })
-        return
-      } else {
-        const today = new Date()
-        await user.update({
-          dataUltimoAbastecimento: today,
-          totalGastoDia: 0
-        })
-      }
     }
 
     const totalLiters = valor / configuration.valorVenda

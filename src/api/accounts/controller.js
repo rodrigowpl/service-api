@@ -69,7 +69,7 @@ module.exports = {
       saldo,
       banco,
       tipoConta,
-      limiteDiario,
+      limiteGastoDiario,
       telefone,
       agencia,
       conta,
@@ -89,7 +89,7 @@ module.exports = {
       telefone,
       conta,
       tipoConta,
-      limiteDiario,
+      limiteGastoDiario,
       companyId: idEmpresa,
       gasStationId: idPosto
     })
@@ -109,7 +109,7 @@ module.exports = {
       telefone,
       conta,
       tipoConta,
-      limiteDiario,
+      limiteGastoDiario,
       idEmpresa,
       idPosto
     } = req.body
@@ -130,7 +130,7 @@ module.exports = {
       agencia,
       conta,
       tipoConta,
-      limiteDiario,
+      limiteGastoDiario,
       companyId: idEmpresa,
       gasStationId: idPosto
     })

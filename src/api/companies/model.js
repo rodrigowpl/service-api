@@ -20,7 +20,7 @@ module.exports = sequelize => (
     saldo: {
       type: DataTypes.INTEGER
     },
-    limiteDiario: {
+    limiteGastoDiario: {
       type: DataTypes.INTEGER
     },
     telefone: {
