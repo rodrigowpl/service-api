@@ -56,6 +56,10 @@ module.exports = sequelize => (
     totalGastoDia: {
       type: DataTypes.INTEGER,
       defaultValue: 0
+    },
+    totalGastoMes: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0
     }
   }, {
     tableName: 'user'

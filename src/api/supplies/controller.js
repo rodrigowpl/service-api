@@ -12,44 +12,6 @@ const ConfigurationController = require('../configurations/controller')
 
 const { SUPPLY_STATUS } = require('./supply-status')
 
-const validateSupplyLimit = async ({ basis, model, supplyValue, message }, res) => {
-  const totalSuppliedValue = model.totalGastoDia + supplyValue
-
-  const isPeriodValidation = {
-    'daily': isToday,
-    'monthly': isSameMonth
-  }
-
-  const limitField = {
-    'daily': model.limiteGastoDiario,
-    'monthly': model.limiteGastoMensal
-  }
-
-  if (isPeriodValidation[basis](model.dataUltimoAbastecimento)) {
-    if (totalSuppliedValue > limitField) {
-      res.status(422).send({
-        code: 422,
-        result: message
-      })
-      return
-    }
-  } else {
-    if (supplyValue > limitField) {
-      res.status(422).send({
-        code: 422,
-        result: message
-      })
-      return
-    } else {
-      const today = new Date()
-      await model.update({
-        dataUltimoAbastecimento: today,
-        totalGastoDia: 0
-      })
-    }
-  }
-}
-
 module.exports = {
   create: async (req, res) => {
     const { idUsuario, idPosto, valor, combustivel, km, placa } = req.body
@@ -68,26 +30,43 @@ module.exports = {
       where: { id: user.companyId }
     })
 
-    validateSupplyLimit({
-      basis: 'daily',
-      model: company,
-      supplyValue: valor,
-      message: 'O limite diário da sua empresa foi excecido.'
-    }, res)
+    const totalSpentCompanyToday = company.totalGastoDia + valor
+    if (totalSpentCompanyToday > company.limiteGastoDiario || valor > company.limiteGastoDiario) {
+      res.status(422).send({
+        code: 422,
+        result: 'O limite diário da sua empresa foi excedido.'
+      })
+      return
+    }
 
-    validateSupplyLimit({
-      basis: 'daily',
-      model: user,
-      supplyValue: valor,
-      message: 'O seu limite diário foi excecido'
-    }, res)
+    const totalSpentUserToday = user.totalGastoDia + valor
+    if (totalSpentUserToday > user.limiteGastoDiario || valor > user.limiteGastoDiario) {
+      res.status(422).send({
+        code: 422,
+        result: 'O seu limite diário foi excedido'
+      })
+      return
+    }
 
-    validateSupplyLimit({
-      basis: 'monthly',
-      model: user,
-      supplyValue: valor,
-      message: 'O seu limite mensal foi excecido'
-    }, res)
+    const totalSpentUserMonth = user.totalGastoMes + valor
+    if (totalSpentUserMonth > user.limiteGastoMensal || valor > user.limiteGastoMensal) {
+      res.status(422).send({
+        code: 422,
+        result: 'O seu limite mensal foi excedido'
+      })
+      return
+    }
+
+    if (user.saldo) {
+      const totalSpentNow = user.totalGastoDia + valor
+      if (totalSpentNow > user.saldo) {
+        res.status(422).send({
+          code: 422,
+          result: 'Você não tem saldo suficiente'
+        })
+        return
+      }
+    }
 
     const configuration = await ConfigurationController.getConfiguration({
       fuelType: combustivel,
@@ -202,13 +181,35 @@ module.exports = {
       })
     }
 
-    await company.update({
-      totalGastoDia: company.totalGastoDia + supplyPrice
-    })
+    if (isToday(company.dataUltimoAbastecimento)) {
+      await company.update({
+        totalGastoDia: company.totalGastoDia + supplyPrice
+      })
+    } else {
+      await company.update({
+        totalGastoDia: supplyPrice
+      })
+    }
 
-    await user.update({
-      totalGastoDia: user.totalGastoDia + supplyPrice
-    })
+    if (isToday(user.dataUltimoAbastecimento)) {
+      await user.update({
+        totalGastoDia: user.totalGastoDia + supplyPrice
+      })
+    } else {
+      await user.update({
+        totalGastoDia: supplyPrice
+      })
+    }
+
+    if (isSameMonth(user.dataUltimoAbastecimento)) {
+      await user.update({
+        totalGastoMes: user.totalGastoMes + supplyPrice
+      })
+    } else {
+      await user.update({
+        totalGastoMes: supplyPrice
+      })
+    }
 
     res.send('Abastecimento efetuado com sucesso.')
   },

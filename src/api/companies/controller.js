@@ -56,7 +56,7 @@ module.exports = {
     const { codigo, nome, cpf, placa } = req.query
 
     const account = await Account.findOne({
-      where: { accountId }
+      where: { id: accountId }
     })
 
     let where = {
