@@ -2,7 +2,7 @@ const { Op } = require('sequelize')
 const { addDays, isToday, isSameMonth } = require('date-fns')
 const camelCase = require('camelcase')
 
-const { Supply, GasStation, User, Account, Company } = require('../models')
+const { Supply, GasStation, User, Company } = require('../models')
 
 const { generateRandomToken, generatePinCode } = require('../../helpers/token')
 const { humanizeDateTime } = require('../../helpers/date')
@@ -144,8 +144,8 @@ module.exports = {
       where: { id: supply.user.id }
     })
 
-    const company = await Account.findOne({
-      where: { accountId: user.accountId }
+    const company = await Company.findOne({
+      where: { id: user.companyId }
     })
 
     const configuration = await ConfigurationController.getConfiguration({
