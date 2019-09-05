@@ -116,7 +116,6 @@ module.exports = {
         const gasStation = supply.gasStation
 
         const companyUser = await Company.findOne({
-          include: [Company],
           where: {
             id: user.companyId
           }
