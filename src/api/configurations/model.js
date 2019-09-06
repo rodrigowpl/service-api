@@ -11,7 +11,7 @@ module.exports = sequelize => (
       type: DataTypes.STRING
     },
     valorVenda: {
-      type: DataTypes.INTEGER
+      type: DataTypes.DOUBLE
     },
     taxaGasola: {
       type: DataTypes.DOUBLE
