@@ -11,6 +11,7 @@ const GasStationCompany = require('./gas-stations-companies/model')(SequelizeIns
 const Supply = require('./supplies/model')(SequelizeInstance)
 const Company = require('./companies/model')(SequelizeInstance)
 const Configuration = require('./configurations/model')(SequelizeInstance)
+const Negotiation = require('./negotiations/model')(SequelizeInstance)
 
 Supply.belongsTo(User)
 Supply.belongsTo(GasStation)
@@ -31,6 +32,9 @@ Company.belongsToMany(GasStation, { as: 'gasStations', through: GasStationCompan
 Configuration.belongsTo(GasStation)
 Configuration.belongsTo(Company)
 
+Negotiation.belongsTo(Company)
+Negotiation.belongsTo(GasStation)
+
 const syncDatabase = async () => {
   await SequelizeInstance.sync()
   console.log('Database sync with success!')
@@ -44,5 +48,6 @@ module.exports = {
   GasStation,
   GasStationCompany,
   Supply,
-  Configuration
+  Configuration,
+  Negotiation
 }
