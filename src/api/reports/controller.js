@@ -131,6 +131,7 @@ module.exports = {
           combustivel: supply.combustivel,
           totalCreditos: getCurrencyFormattedByCents(supply.totalCreditos),
           posto: supply.posto,
+          cnpj: gasStation.cnpj,
           bandeiraPosto: supply.bandeira,
           enderecoPosto: supply.endereco,
           quilometragem: formatMiles(supply.km),

@@ -18,6 +18,7 @@ module.exports = {
   login: async (req, res) => {
     const { email, senha } = req.body
     const account = await Account.findOne({
+      include: [Company],
       where: { email }
     })
 
@@ -40,11 +41,17 @@ module.exports = {
       return
     }
 
+    let tipoConta = '-'
+    const company = account.company
+    if (company) {
+      tipoConta = company.tipoConta
+    }
+
     const token = generateJWTToken(email)
     const response = {
       id: account.id,
       nome: account.nome,
-      tipoConta: account.tipoConta,
+      tipoConta,
       token
     }
     res.send(response)
