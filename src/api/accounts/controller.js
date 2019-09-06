@@ -89,6 +89,18 @@ module.exports = {
     } = req.body
     const passwordEncrypted = await bcrypt.hash(senha, 12)
 
+    const existingAccount = await Account.findOne({
+      where: { email }
+    })
+
+    if (existingAccount) {
+      res.status(401).send({
+        status: 422,
+        result: 'Esse usuário já existe'
+      })
+      return
+    }
+
     const account = await Account.create({
       nome,
       email,
@@ -108,6 +120,18 @@ module.exports = {
       idEmpresa,
       idPosto
     } = req.body
+
+    const existingAccount = await Account.findOne({
+      where: { email }
+    })
+
+    if (existingAccount) {
+      res.status(401).send({
+        status: 422,
+        result: 'Esse usuário já existe'
+      })
+      return
+    }
 
     const account = await Account.findOne({
       where: {
