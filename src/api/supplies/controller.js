@@ -1,6 +1,7 @@
 const { Op } = require('sequelize')
 const { addDays, isToday, isSameMonth } = require('date-fns')
 const camelCase = require('camelcase')
+const numeral = require('numeral')
 
 const { Supply, GasStation, User, Company } = require('../models')
 
@@ -87,7 +88,7 @@ module.exports = {
       return
     }
 
-    const totalLiters = valor / configuration.valorVenda
+    const totalLiters = valor / numeral(configuration.valorVenda).multiply(100).value()
     const totalCredits = Math.round((totalLiters * configuration.desconto) * 100)
 
     const supply = await Supply.create({

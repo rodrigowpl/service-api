@@ -59,9 +59,9 @@ module.exports = {
         })
 
         return Object.assign(normalizeResponse(gasStation), {
-          gasolina: gasolineConfiguration.valorVenda / 100,
-          diesel: dieselConfiguration.valorVenda / 100,
-          etanol: etanolConfiguration.valorVenda / 100,
+          gasolina: gasolineConfiguration.valorVenda,
+          diesel: dieselConfiguration.valorVenda,
+          etanol: etanolConfiguration.valorVenda,
           ganhoGasolina: gasolineConfiguration.desconto,
           ganhoDiesel: dieselConfiguration.desconto,
           ganhoEtanol: etanolConfiguration.desconto,
