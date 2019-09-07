@@ -99,12 +99,9 @@ module.exports = {
       return
     }
 
-    console.log('valor', valor)
-    console.log('valor venda', configuration.valorVenda)
-    const totalLiters = valor / numeral(configuration.valorVenda).multiply(100).value()
-    console.log('totalLiters', totalLiters)
-    const totalCredits = Math.round((totalLiters * configuration.desconto) * 100)
-    console.log('totalCredits', totalCredits)
+    const supplyValue = numeral(valor).divide(100).value()
+    const totalLiters = supplyValue / configuration.valorVenda
+    const totalCredits = supplyValue * configuration.desconto
 
     const supply = await Supply.create({
       codigo: generatePinCode(8),
