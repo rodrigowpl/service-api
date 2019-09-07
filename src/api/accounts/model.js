@@ -2,6 +2,8 @@ const { DataTypes } = require('sequelize')
 
 const { ACTIVED } = require('../../helpers/constants')
 
+const { ACCOUNT_PROFILE } = require('./account-profile')
+
 module.exports = sequelize => (
   sequelize.define('account', {
     id: {
@@ -24,6 +26,10 @@ module.exports = sequelize => (
     ativado: {
       type: DataTypes.INTEGER,
       defaultValue: ACTIVED
+    },
+    perfil: {
+      type: DataTypes.STRING,
+      defaultValue: ACCOUNT_PROFILE.NORMAL
     }
   }, {
     tableName: 'account'

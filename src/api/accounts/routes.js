@@ -6,11 +6,12 @@ const CompanyController = require('../companies/controller')
 
 const router = express.Router()
 
+router.post('/login', AccountController.login)
+router.post('/admin/login', AccountController.loginAdmin)
 router.get('/', AccountController.getAll)
 router.post('/', AccountController.create)
 router.put('/:accountId', AccountController.update)
 router.delete('/:accountId', AccountController.delete)
-router.post('/login', AccountController.login)
 router.get('/:accountId/faturamento', AccountController.getTotalBiling)
 router.get('/:accountId/postos', AccountController.getAllGasStations)
 router.get('/:accountId/abastecimentos', AccountController.getAllSupplies)

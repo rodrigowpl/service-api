@@ -5,6 +5,8 @@ const { startOfDay, endOfDay } = require('date-fns')
 
 const { Account, GasStation, Supply, Company } = require('../models')
 
+const { ACCOUNT_PROFILE } = require('../accounts/account-profile')
+
 const { SUPPLY_STATUS } = require('../supplies/supply-status')
 
 const { generateJWTToken } = require('../../helpers/token')
@@ -27,7 +29,6 @@ module.exports = {
         status: 401,
         result: 'Usuário inválido'
       })
-
       return
     }
 
@@ -37,7 +38,54 @@ module.exports = {
         status: 401,
         result: 'Senha inválida'
       })
+      return
+    }
 
+    let tipoConta = '-'
+    const company = account.company
+    if (company) {
+      tipoConta = company.tipoConta
+    }
+
+    const token = generateJWTToken(usuario)
+    const response = {
+      id: account.id,
+      nome: account.nome,
+      tipoConta,
+      token
+    }
+    res.send(response)
+  },
+
+  loginAdmin: async (req, res) => {
+    const { usuario, senha } = req.body
+    const account = await Account.findOne({
+      include: [Company],
+      where: { usuario }
+    })
+
+    if (!account) {
+      res.status(401).send({
+        status: 401,
+        result: 'Usuário inválido'
+      })
+      return
+    }
+
+    const isValidPassword = await bcrypt.compare(senha, account.senha)
+    if (!isValidPassword) {
+      res.status(401).send({
+        status: 401,
+        result: 'Senha inválida'
+      })
+      return
+    }
+
+    if (usuario.perfil !== ACCOUNT_PROFILE.ADMIN) {
+      res.status(401).send({
+        status: 401,
+        result: 'Usuario inválido'
+      })
       return
     }
 
