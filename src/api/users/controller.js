@@ -72,7 +72,19 @@ module.exports = {
   },
 
   create: async (req, res) => {
-    const { nome, email, senha, cpf, placa, idConta } = req.body
+    const { nome, usuario, email, senha, cpf, placa, idConta } = req.body
+
+    const existingUser = await User.findOne({
+      where: { usuario }
+    })
+
+    if (existingUser) {
+      res.status(422).send({
+        status: 422,
+        result: 'Esse usuário já existe'
+      })
+      return
+    }
 
     const account = await Account.findOne({
       where: { id: idConta }
@@ -82,7 +94,7 @@ module.exports = {
     const user = await User.create({
       codigo: generatePinCode(8),
       nome,
-      usuario: email,
+      usuario,
       email,
       senha: passwordEncrypted,
       cpf,
@@ -95,7 +107,19 @@ module.exports = {
 
   update: async (req, res) => {
     const { userId } = req.params
-    const { usuario, senha, saldo, limiteGastoMensal, limiteGastoDiario } = req.body
+    const { usuario, email, senha, saldo, limiteGastoMensal, limiteGastoDiario } = req.body
+
+    const existingUser = await User.findOne({
+      where: { usuario }
+    })
+
+    if (existingUser) {
+      res.status(422).send({
+        status: 422,
+        result: 'Esse usuário já existe'
+      })
+      return
+    }
 
     const user = await User.findOne({
       attributes: DEFAULT_ATTRIBUTES,
@@ -113,7 +137,7 @@ module.exports = {
       limiteGastoMensal: limiteGastoMensal ? numeral(limiteGastoMensal).multiply(100).value() : null,
       limiteGastoDiario: limiteGastoDiario ? numeral(limiteGastoDiario).multiply(100).value() : null,
       usuario,
-      email: usuario,
+      email,
       senha: passwordEncrypted || user.senha
     })
 
