@@ -29,32 +29,34 @@ module.exports = {
       status: SUPPLY_STATUS.CONCLUDED
     }
 
-    const account = await Account.findOne({
-      where: { id: idConta }
-    })
-
-    if (account.companyId) {
-      const company = await Company.findOne({
-        include: [{
-          model: GasStation,
-          as: 'gasStations'
-        }],
-        where: { id: account.companyId }
+    if (idConta) {
+      const account = await Account.findOne({
+        where: { id: idConta }
       })
 
-      const allGasStationsIds = company.gasStations.map(({ id }) => id)
-      if (allGasStationsIds.length > 0) {
-        where = {
-          ...where,
-          gasStationId: {
-            [Op.in]: allGasStationsIds
+      if (account.companyId) {
+        const company = await Company.findOne({
+          include: [{
+            model: GasStation,
+            as: 'gasStations'
+          }],
+          where: { id: account.companyId }
+        })
+
+        const allGasStationsIds = company.gasStations.map(({ id }) => id)
+        if (allGasStationsIds.length > 0) {
+          where = {
+            ...where,
+            gasStationId: {
+              [Op.in]: allGasStationsIds
+            }
           }
         }
-      }
-    } else {
-      where = {
-        ...where,
-        gasStationId: account.gasStationId
+      } else {
+        where = {
+          ...where,
+          gasStationId: account.gasStationId
+        }
       }
     }
 
