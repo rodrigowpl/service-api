@@ -108,7 +108,7 @@ module.exports = {
     const normalize = accounts.map(acc => ({
       id: acc.id,
       nome: acc.nome,
-      usuairo: acc.usuario,
+      usuario: acc.usuario,
       email: acc.email,
       empresa: acc.company ? acc.company.nome : '-',
       posto: acc.gasStation ? acc.gasStation.nome : '-',
