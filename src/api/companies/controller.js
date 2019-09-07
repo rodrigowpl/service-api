@@ -19,9 +19,10 @@ module.exports = {
   },
 
   create: async (req, res) => {
+    const { saldo } = req.body
     const company = await Company.create({
       ...req.body,
-      saldo: numeral(req.body.saldo).multiply(100).value()
+      saldo: saldo ? numeral(saldo).multiply(100).value() : null
     })
 
     res.send(company)
