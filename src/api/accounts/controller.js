@@ -12,6 +12,7 @@ const { SUPPLY_STATUS } = require('../supplies/supply-status')
 const { generateJWTToken } = require('../../helpers/token')
 const { humanizeDateTime, formatHour } = require('../../helpers/date')
 const { ACTIVED, DEACTIVED } = require('../../helpers/constants')
+const { calcPercentage } = require('../../helpers/number')
 
 const GasStationCompanyController = require('../gas-stations-companies/controller')
 const ConfigurationController = require('../configurations/controller')
@@ -269,11 +270,11 @@ module.exports = {
           nome: gasStation.nome,
           endereco: gasStation.endereco,
           gasolina: gasolineConfiguration.valorVenda,
-          ganhoGasolina: gasolineConfiguration.desconto,
+          ganhoGasolina: calcPercentage(gasolineConfiguration.valorVenda, gasolineConfiguration.desconto, false).toFixed(2),
           diesel: dieselConfiguration.valorVenda,
-          ganhoDiesel: dieselConfiguration.desconto,
+          ganhoDiesel: calcPercentage(dieselConfiguration.valorVenda, dieselConfiguration.desconto, false).toFixed(2),
           etanol: etanolConfiguration.valorVenda,
-          ganhoEtanol: etanolConfiguration.desconto,
+          ganhoEtanol: calcPercentage(etanolConfiguration.valorVenda, etanolConfiguration.desconto, false).toFixed(2),
           latitude: gasStation.latitude,
           longitude: gasStation.longitude
         }

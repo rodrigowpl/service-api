@@ -7,7 +7,14 @@ const formatCurrency = (value) => {
 module.exports = {
   fixedNumberTwoDecimals: (value) => Math.round(value * 100) / 100,
 
-  calcPercentage: (value, percent) => Math.round((value * percent) / 100),
+  calcPercentage: (value, percent, roundValue = true) => {
+    const valueCalculated = (value * percent) / 100
+    if (roundValue) {
+      return Math.round(valueCalculated)
+    }
+
+    return valueCalculated
+  },
 
   getCurrencyFormattedByCents: (value) => {
     if (!value) return 'R$0.00'
