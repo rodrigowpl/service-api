@@ -15,8 +15,8 @@ module.exports = {
       id,
       descricao,
       url,
-      posto: gasStation.nome,
-      empresa: company.nome
+      posto: gasStation ? gasStation.nome : '-',
+      empresa: company ? company.nome : '-'
     }))
 
     res.send(normalize)
