@@ -16,10 +16,10 @@ const ConfigurationController = require('../configurations/controller')
 
 module.exports = {
   login: async (req, res) => {
-    const { email, senha } = req.body
+    const { usuario, senha } = req.body
     const account = await Account.findOne({
       include: [Company],
-      where: { email }
+      where: { usuario }
     })
 
     if (!account) {
@@ -47,7 +47,7 @@ module.exports = {
       tipoConta = company.tipoConta
     }
 
-    const token = generateJWTToken(email)
+    const token = generateJWTToken(usuario)
     const response = {
       id: account.id,
       nome: account.nome,
@@ -82,6 +82,7 @@ module.exports = {
   create: async (req, res) => {
     const {
       nome,
+      usuario,
       email,
       senha,
       idEmpresa,
@@ -90,7 +91,7 @@ module.exports = {
     const passwordEncrypted = await bcrypt.hash(senha, 12)
 
     const existingAccount = await Account.findOne({
-      where: { email }
+      where: { usuario }
     })
 
     if (existingAccount) {
@@ -103,6 +104,7 @@ module.exports = {
 
     const account = await Account.create({
       nome,
+      usuario,
       email,
       senha: passwordEncrypted,
       companyId: idEmpresa,
@@ -116,13 +118,14 @@ module.exports = {
     const { accountId } = req.params
     const {
       nome,
+      usuario,
       email,
       idEmpresa,
       idPosto
     } = req.body
 
     const existingAccount = await Account.findOne({
-      where: { email }
+      where: { usuario }
     })
 
     if (existingAccount) {
@@ -141,6 +144,7 @@ module.exports = {
 
     const accountUpdated = await account.update({
       nome,
+      usuario,
       email,
       companyId: idEmpresa,
       gasStationId: idPosto
