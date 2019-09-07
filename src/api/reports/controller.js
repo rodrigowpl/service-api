@@ -11,7 +11,7 @@ const { getCurrencyFormattedByCents, formatMiles } = require('../../helpers/numb
 module.exports = {
   getAllSupplies: async (req, res) => {
     const {
-      idConta,
+      idConta = '',
       idUsuario,
       dataDe,
       dataAte,
@@ -29,11 +29,11 @@ module.exports = {
       status: SUPPLY_STATUS.CONCLUDED
     }
 
-    if (idConta) {
-      const account = await Account.findOne({
-        where: { id: idConta }
-      })
+    const account = await Account.findOne({
+      where: { id: idConta }
+    })
 
+    if (account) {
       if (account.companyId) {
         const company = await Company.findOne({
           include: [{
