@@ -132,6 +132,7 @@ module.exports = {
       nome,
       usuario,
       email,
+      perfil,
       senha,
       idEmpresa,
       idPosto
@@ -154,6 +155,7 @@ module.exports = {
       nome,
       usuario,
       email,
+      perfil,
       senha: passwordEncrypted,
       companyId: idEmpresa,
       gasStationId: idPosto
@@ -168,6 +170,7 @@ module.exports = {
       nome,
       usuario,
       email,
+      perfil,
       idEmpresa,
       idPosto
     } = req.body
@@ -193,6 +196,7 @@ module.exports = {
     const accountUpdated = await account.update({
       nome,
       usuario,
+      perfil,
       email,
       companyId: idEmpresa,
       gasStationId: idPosto
