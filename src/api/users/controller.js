@@ -178,7 +178,7 @@ module.exports = {
 
     const company = account.company
     if (company.tipoConta === ACCOUNT_TYPE.PRE) {
-      const totalCreditsAdded = R.sum(users.map(({ saldo }) => saldo))
+      const totalCreditsAdded = numeral(R.sum(users.map(({ saldo }) => saldo))).multiply(100).value()
       if (totalCreditsAdded > company.saldo) {
         res.status(422).send({
           code: 422,
