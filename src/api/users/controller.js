@@ -29,10 +29,10 @@ const normalizeResponse = (user) => (
 
 module.exports = {
   login: async (req, res) => {
-    const { email, senha } = req.body
+    const { usuario, senha } = req.body
     const user = await User.findOne({
       where: {
-        email,
+        usuario,
         ativado: ACTIVED
       }
     })
@@ -60,7 +60,7 @@ module.exports = {
       where: { id: user.companyId }
     })
 
-    const token = generateJWTToken(email)
+    const token = generateJWTToken(usuario)
     const response = {
       id: user.id,
       nome: user.nome,
