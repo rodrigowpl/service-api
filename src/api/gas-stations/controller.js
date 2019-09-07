@@ -64,9 +64,9 @@ module.exports = {
           gasolina: gasolineConfiguration.valorVenda,
           diesel: dieselConfiguration.valorVenda,
           etanol: etanolConfiguration.valorVenda,
-          ganhoGasolina: calcPercentage(gasolineConfiguration.valorVenda, gasolineConfiguration.desconto, false).toFixed(2),
-          ganhoDiesel: calcPercentage(dieselConfiguration.valorVenda, dieselConfiguration.desconto, false).toFixed(2),
-          ganhoEtanol: calcPercentage(etanolConfiguration.valorVenda, etanolConfiguration.desconto, false).toFixed(2)
+          ganhoGasolina: calcPercentage(gasolineConfiguration.valorVenda, gasolineConfiguration.desconto, false),
+          ganhoDiesel: calcPercentage(dieselConfiguration.valorVenda, dieselConfiguration.desconto, false),
+          ganhoEtanol: calcPercentage(etanolConfiguration.valorVenda, etanolConfiguration.desconto, false)
         })
       })
     )
