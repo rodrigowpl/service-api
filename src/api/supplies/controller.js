@@ -4,6 +4,7 @@ const camelCase = require('camelcase')
 const numeral = require('numeral')
 
 const { Supply, GasStation, User, Company } = require('../models')
+const { ACCOUNT_TYPE } = require('../companies/account-type')
 
 const { generateRandomToken, generatePinCode } = require('../../helpers/token')
 const { humanizeDateTime } = require('../../helpers/date')
@@ -71,6 +72,16 @@ module.exports = {
           result: 'Você não tem saldo suficiente'
         })
         return
+      }
+    } else {
+      if (company.tipoConta === ACCOUNT_TYPE.PRE) {
+        if (valor > company.saldo) {
+          res.status(422).send({
+            code: 422,
+            result: 'Sua empresa não tem saldo suficiente'
+          })
+          return
+        }
       }
     }
 
