@@ -60,7 +60,6 @@ module.exports = {
   loginAdmin: async (req, res) => {
     const { usuario, senha } = req.body
     const account = await Account.findOne({
-      include: [Company],
       where: { usuario }
     })
 
@@ -81,25 +80,18 @@ module.exports = {
       return
     }
 
-    if (usuario.perfil !== ACCOUNT_PROFILE.ADMIN) {
+    if (account.perfil !== ACCOUNT_PROFILE.ADMIN) {
       res.status(401).send({
         status: 401,
-        result: 'Usuario inválido'
+        result: 'Usuario ser perfil para acesso'
       })
       return
-    }
-
-    let tipoConta = '-'
-    const company = account.company
-    if (company) {
-      tipoConta = company.tipoConta
     }
 
     const token = generateJWTToken(usuario)
     const response = {
       id: account.id,
       nome: account.nome,
-      tipoConta,
       token
     }
     res.send(response)
@@ -116,6 +108,7 @@ module.exports = {
     const normalize = accounts.map(acc => ({
       id: acc.id,
       nome: acc.nome,
+      usuairo: acc.usuario,
       email: acc.email,
       empresa: acc.company ? acc.company.nome : '-',
       posto: acc.gasStation ? acc.gasStation.nome : '-',
