@@ -3,8 +3,6 @@ const { User, GasStation, Company } = require('../models')
 const { formatHour } = require('../../helpers/date')
 const { ACTIVED, DEACTIVED } = require('../../helpers/constants')
 
-const { calcPercentage } = require('../../helpers/number')
-
 const ConfigurationController = require('../configurations/controller')
 
 const normalizeResponse = (gasStation) => (
@@ -64,9 +62,9 @@ module.exports = {
           gasolina: gasolineConfiguration.valorVenda,
           diesel: dieselConfiguration.valorVenda,
           etanol: etanolConfiguration.valorVenda,
-          ganhoGasolina: calcPercentage(gasolineConfiguration.valorVenda, gasolineConfiguration.desconto, false),
-          ganhoDiesel: calcPercentage(dieselConfiguration.valorVenda, dieselConfiguration.desconto, false),
-          ganhoEtanol: calcPercentage(etanolConfiguration.valorVenda, etanolConfiguration.desconto, false)
+          ganhoGasolina: gasolineConfiguration.desconto,
+          ganhoDiesel: etanolConfiguration.desconto,
+          ganhoEtanol: dieselConfiguration.desconto
         })
       })
     )
