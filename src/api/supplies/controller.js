@@ -99,8 +99,12 @@ module.exports = {
       return
     }
 
+    console.log('valor', valor)
+    console.log('valor venda', configuration.valorVenda)
     const totalLiters = valor / numeral(configuration.valorVenda).multiply(100).value()
+    console.log('totalLiters', totalLiters)
     const totalCredits = Math.round((totalLiters * configuration.desconto) * 100)
+    console.log('totalCredits', totalCredits)
 
     const supply = await Supply.create({
       codigo: generatePinCode(8),
@@ -188,13 +192,15 @@ module.exports = {
 
     const supplyPrice = supply.valor - supply.totalCreditos
 
-    if (user.saldo) {
-      await user.update({
-        saldo: user.saldo - supplyPrice
-      })
-    } else {
+    if (company.tipoConta === ACCOUNT_TYPE.PRE) {
       await company.update({
         saldo: company.saldo - supplyPrice
+      })
+    }
+
+    if (user.saldo) {
+      await user.update({
+        saldo: user.saldo - supplyPrice,
       })
     }
 
