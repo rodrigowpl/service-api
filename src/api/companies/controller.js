@@ -15,7 +15,13 @@ module.exports = {
       }
     })
 
-    res.send(companies)
+    const response = companies.map((empresa) => (
+      Object.assign(empresa.toJSON(), {
+        limiteGastoDiario: getCurrencyFormattedByCents(empresa.limiteGastoDiario)
+      })
+    ))
+
+    res.send(response)
   },
 
   create: async (req, res) => {
