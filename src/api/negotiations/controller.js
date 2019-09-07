@@ -11,12 +11,14 @@ module.exports = {
       }
     })
 
-    const normalize = negotiation.map(({ id, descricao, url, gasStation, company }) => ({
+    const normalize = negotiation.map(({ id, descricao, url, gasStation, company, gasStationId, companyId }) => ({
       id,
       descricao,
       url,
       posto: gasStation ? gasStation.nome : '-',
-      empresa: company ? company.nome : '-'
+      empresa: company ? company.nome : '-',
+      idPosto: gasStationId,
+      idEmpresa: companyId
     }))
 
     res.send(normalize)
