@@ -1,7 +1,9 @@
 const bcrypt = require('bcrypt')
 const numeral = require('numeral')
+const R = require('ramda')
 
 const { User, Account, Company } = require('../models')
+const { ACCOUNT_TYPE } = require('../companies/account-type')
 
 const { generateJWTToken, generatePinCode } = require('../../helpers/token')
 const { ACTIVED, DEACTIVED } = require('../../helpers/constants')
@@ -107,7 +109,7 @@ module.exports = {
 
   update: async (req, res) => {
     const { userId } = req.params
-    const { usuario, email, senha, saldo, limiteGastoMensal, limiteGastoDiario } = req.body
+    const { usuario, senha } = req.body
 
     const existingUser = await User.findOne({
       where: { usuario }
@@ -133,38 +135,10 @@ module.exports = {
 
     const userUpdated = await user.update({
       ...req.body,
-      saldo: saldo ? numeral(saldo).multiply(100).value() : null,
-      limiteGastoMensal: limiteGastoMensal ? numeral(limiteGastoMensal).multiply(100).value() : null,
-      limiteGastoDiario: limiteGastoDiario ? numeral(limiteGastoDiario).multiply(100).value() : null,
-      usuario,
-      email,
       senha: passwordEncrypted || user.senha
     })
 
     res.send(normalizeResponse(userUpdated))
-  },
-
-  updateAll: async (req, res) => {
-    const users = req.body
-
-    const usersUpdated = await Promise.all(
-      users.map(async ({ id, saldo, limiteGastoMensal, limiteGastoDiario }) => {
-        const user = await User.findOne({
-          attributes: DEFAULT_ATTRIBUTES,
-          where: { id }
-        })
-
-        const userUpdated = await user.update({
-          saldo: saldo ? numeral(saldo).multiply(100).value() : null,
-          limiteGastoMensal: limiteGastoMensal ? numeral(limiteGastoMensal).multiply(100).value() : null,
-          limiteGastoDiario: limiteGastoDiario ? numeral(limiteGastoDiario).multiply(100).value() : null
-        })
-
-        return normalizeResponse(userUpdated)
-      })
-    )
-
-    res.send(usersUpdated)
   },
 
   delete: async (req, res) => {
@@ -189,5 +163,48 @@ module.exports = {
     return res.send({
       saldo: user.saldo !== null ? `${getCurrencyFormattedByCents(user.saldo)}` : null
     })
+  },
+
+  addCredits: async (req, res) => {
+    const { accountId } = req.params
+    const users = req.body
+
+    const account = await Account.findOne({
+      include: [Company],
+      where: {
+        id: accountId
+      }
+    })
+
+    const company = account.company
+    if (company.tipoConta === ACCOUNT_TYPE.PRE) {
+      const totalCreditsAdded = R.sum(users.map(({ saldo }) => saldo))
+      if (totalCreditsAdded > company.saldo) {
+        res.status(422).send({
+          code: 422,
+          result: 'Saldos dos usuários está ultrapassando o saldo da empresa.'
+        })
+        return
+      }
+    }
+
+    const usersUpdated = await Promise.all(
+      users.map(async ({ id, saldo, limiteGastoMensal, limiteGastoDiario }) => {
+        const user = await User.findOne({
+          attributes: DEFAULT_ATTRIBUTES,
+          where: { id }
+        })
+
+        const userUpdated = await user.update({
+          saldo: saldo ? numeral(saldo).multiply(100).value() : null,
+          limiteGastoMensal: limiteGastoMensal ? numeral(limiteGastoMensal).multiply(100).value() : null,
+          limiteGastoDiario: limiteGastoDiario ? numeral(limiteGastoDiario).multiply(100).value() : null
+        })
+
+        return normalizeResponse(userUpdated)
+      })
+    )
+
+    res.send(usersUpdated)
   }
 }

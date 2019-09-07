@@ -12,7 +12,7 @@ router.get('/:userId/saldo', UserController.getBalance)
 router.get('/:userId/postos', GasStationController.getAllByUserAccount)
 router.delete('/:userId', UserController.delete)
 router.put('/:userId', UserController.update)
-router.post('/atualizarTodos', UserController.updateAll)
+router.post('/:accountId/adicionarCreditos', UserController.addCredits)
 
 router.get('/:userId/historico', SupplyController.getSuppliesHistoryByUser)
 
