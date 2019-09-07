@@ -1,7 +1,16 @@
 const { format, addDays } = require('date-fns')
 
-const formatHour = date => {
-  return format(date, 'HH:mm')
+const getUTCDate = (date) => {
+  const convertDate = new Date(date)
+  return new Date(convertDate.getTime() + (convertDate.getTimezoneOffset() * 60000))
+}
+
+const formatHour = (date, utc) => {
+  let _date = date
+  if (utc) {
+    _date = getUTCDate(date)
+  }
+  return format(_date, 'HH:mm')
 }
 
 const formatDate = (date, daysToAdd) => {
@@ -19,8 +28,5 @@ module.exports = {
 
   humanizeDateTime: date => `${formatDate(date)} às ${formatHour(date)}`,
 
-  getUTCDate: (date) => {
-    const convertDate = new Date(date)
-    return new Date(convertDate.getTime() + (convertDate.getTimezoneOffset() * 60000))
-  }
+  getUTCDate
 }
