@@ -19,7 +19,7 @@ module.exports = {
     const s3Params = {
       Bucket: bucketPath,
       Key: fileName,
-      Expires: 5000,
+      Expires: 120000,
       ContentType: fileType,
       ACL: 'public-read'
     }
