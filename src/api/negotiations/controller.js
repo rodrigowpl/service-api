@@ -1,6 +1,7 @@
 const { Negotiation, GasStation, Company } = require('../models')
 
 const { ACTIVED, DEACTIVED } = require('../../helpers/constants')
+const { getS3SignedUrl } = require('../../helpers/s3-upload')
 
 module.exports = {
   getAll: async (_, res) => {
@@ -66,5 +67,20 @@ module.exports = {
     })
 
     res.send('Removido com sucesso')
+  },
+
+  getS3Url: async (req, res) => {
+    const { fileName, fileType } = req.body
+    try {
+      const response = await getS3SignedUrl({ fileName, fileType })
+      res.send(response)
+    } catch (err) {
+      console.log(err)
+      res.status(422).send({
+        code: 422,
+        result: err.message
+      })
+      return
+    }
   }
 }
