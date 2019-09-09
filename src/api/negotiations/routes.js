@@ -5,6 +5,7 @@ const NegotiationController = require('./controller')
 const router = express.Router()
 
 router.get('/', NegotiationController.getAll)
+router.get('/:accountId', NegotiationController.getAllByAccount)
 router.post('/', NegotiationController.create)
 router.put('/:negotiationId', NegotiationController.update)
 router.delete('/:negotiationId', NegotiationController.delete)

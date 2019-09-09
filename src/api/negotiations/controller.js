@@ -1,28 +1,64 @@
-const { Negotiation, GasStation, Company } = require('../models')
+const { Negotiation, GasStation, Company, Account } = require('../models')
 
 const { ACTIVED, DEACTIVED } = require('../../helpers/constants')
 const { getS3SignedUrl } = require('../../helpers/s3-upload')
 
+const normalize = data => ({
+  id: data.id,
+  descricao: data.descricao,
+  url: data.url,
+  posto: data.gasStation ? data.gasStation.nome : '-',
+  empresa: data.company ? data.company.nome : '-',
+  idPosto: data.gasStationId,
+  idEmpresa: data.companyId
+})
+
 module.exports = {
   getAll: async (_, res) => {
-    const negotiation = await Negotiation.findAll({
+    const negotiations = await Negotiation.findAll({
       include: [GasStation, Company],
       where: {
         ativado: ACTIVED
       }
     })
 
-    const normalize = negotiation.map(({ id, descricao, url, gasStation, company, gasStationId, companyId }) => ({
-      id,
-      descricao,
-      url,
-      posto: gasStation ? gasStation.nome : '-',
-      empresa: company ? company.nome : '-',
-      idPosto: gasStationId,
-      idEmpresa: companyId
-    }))
+    const normalized = negotiations.map(normalize)
 
-    res.send(normalize)
+    res.send(normalized)
+  },
+
+  getAllByAccount: async (req, res) => {
+    const { accountId } = req.params
+    const account = await Account.findOne({
+      where: { id: accountId }
+    })
+
+    let where = {
+      ativado: ACTIVED,
+    }
+
+    if (account.companyId) {
+      where = {
+        ...where,
+        companyId: account.companyId
+      }
+    }
+
+    if (account.gasStationId) {
+      where = {
+        ...where,
+        gasStationId: account.gasStationId
+      }
+    }
+
+    const negotiations = await Negotiation.findAll({
+      include: [GasStation, Company],
+      where
+    })
+
+    const normalized = negotiations.map(normalize)
+
+    res.send(normalized)
   },
 
   create: async (req, res) => {
