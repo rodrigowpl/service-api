@@ -42,6 +42,14 @@ module.exports = {
       return
     }
 
+    if (account.perfil !== ACCOUNT_PROFILE.NORMAL) {
+      res.status(401).send({
+        status: 401,
+        result: 'Usuário inválido'
+      })
+      return
+    }
+
     let tipoConta = '-'
     const company = account.company
     if (company) {
