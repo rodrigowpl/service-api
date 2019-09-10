@@ -67,12 +67,14 @@ module.exports = {
       }
     }
 
-    if (dataDe || dataAte) {
+    const startDate = getUTCDate(dataDe)
+    const endDate = getUTCDate(dataAte)
+    if (startDate || endDate) {
       where = buildRangeFilterQuery(
         where,
         'data_conclusao',
-        getUTCDate(dataDe),
-        getUTCDate(dataAte)
+        startDate,
+        endDate
       )
     }
 

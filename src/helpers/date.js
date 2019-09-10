@@ -1,8 +1,13 @@
-const { format, addDays } = require('date-fns')
+const { format, addDays, isValid } = require('date-fns')
 const moment = require('moment')
 
 const getUTCDate = (date) => {
-  return moment.utc(date)
+  try {
+    if (!isValid(date)) return null
+    return moment.utc(date)
+  } catch (err) {
+    return null
+  }
 }
 
 const convertUTCToLocalDate = (date) => {
