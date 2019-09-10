@@ -2,8 +2,7 @@ const { format, addDays } = require('date-fns')
 const moment = require('moment')
 
 const getUTCDate = (date) => {
-  const convertDate = new Date(date)
-  return new Date(convertDate.getTime() + (convertDate.getTimezoneOffset() * 60000))
+  return moment.utc(date)
 }
 
 const convertUTCToLocalDate = (date) => {
