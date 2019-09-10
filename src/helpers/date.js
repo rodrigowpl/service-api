@@ -1,15 +1,22 @@
 const { format, addDays } = require('date-fns')
+const moment = require('moment')
 
 const getUTCDate = (date) => {
   const convertDate = new Date(date)
   return new Date(convertDate.getTime() + (convertDate.getTimezoneOffset() * 60000))
 }
 
+const convertUTCToLocalDate = (date) => {
+  const localDate = moment(date).local()
+  return localDate
+}
+
 const formatHour = (date, utc) => {
-  let _date = date
+  let _date = convertUTCToLocalDate(date)
   if (utc) {
     _date = getUTCDate(date)
   }
+
   return format(_date, 'HH:mm')
 }
 
@@ -20,6 +27,7 @@ const formatDate = (date, daysToAdd) => {
   }
   return format(date, dateFormat)
 }
+
 
 module.exports = {
   formatHour,
