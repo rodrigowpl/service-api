@@ -1,10 +1,11 @@
-const { format, addDays, isValid } = require('date-fns')
+const { format, addDays, isValid, parse } = require('date-fns')
 const moment = require('moment')
 
 const getUTCDate = (date) => {
   try {
-    if (!isValid(date)) return null
-    return moment.utc(date)
+    const _date = parse(date)
+    if (!isValid(_date)) return null
+    return moment.utc(_date)
   } catch (err) {
     return null
   }
