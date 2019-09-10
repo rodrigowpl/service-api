@@ -5,7 +5,7 @@ const getUTCDate = (date) => {
   try {
     const _date = parse(date)
     if (!isValid(_date)) return null
-    return _date
+    return moment.local(_date)
   } catch (err) {
     return null
   }
