@@ -7,8 +7,8 @@ const ConfigurationController = require('../configurations/controller')
 
 const normalizeResponse = (gasStation) => (
   Object.assign(gasStation.toJSON(), {
-    horarioAtendimentoInicio: formatHour(gasStation.horarioAtendimentoInicio),
-    horarioAtendimentoFim: formatHour(gasStation.horarioAtendimentoFim),
+    horarioAtendimentoInicio: formatHour(gasStation.horarioAtendimentoInicio, true),
+    horarioAtendimentoFim: formatHour(gasStation.horarioAtendimentoFim, true),
     geoloc: {
       latitude: gasStation.latitude,
       longitude: gasStation.longitude
