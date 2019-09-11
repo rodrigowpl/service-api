@@ -11,18 +11,18 @@ const getUTCDate = (date) => {
   }
 }
 
-// const convertUTCToLocalDate = (date) => {
-//   const localDate = moment(date).local()
-//   return localDate
-// }
+const convertUTCToLocalDate = (date) => {
+  const localDate = moment(date).local()
+  return localDate
+}
 
 const formatHour = (date) => {
-  // let _date = convertUTCToLocalDate(date)
+  let _date = convertUTCToLocalDate(date)
   // if (utc) {
   //   _date = moment(date).utc()
   // }
 
-  return format(date, 'HH:mm')
+  return format(_date, 'HH:mm')
 }
 
 const formatDate = (date, daysToAdd) => {
