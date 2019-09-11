@@ -16,11 +16,11 @@ const convertUTCToLocalDate = (date) => {
   return localDate
 }
 
-const formatHour = (date) => {
+const formatHour = (date, utc) => {
   let _date = convertUTCToLocalDate(date)
-  // if (utc) {
-  //   _date = moment(date).utc()
-  // }
+  if (utc) {
+    _date = moment(date).utc()
+  }
 
   return format(_date, 'HH:mm')
 }
