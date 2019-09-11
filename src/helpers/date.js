@@ -11,10 +11,10 @@ const getUTCDate = (date) => {
   }
 }
 
-// const convertUTCToLocalDate = (date) => {
-//   const localDate = moment(date).local()
-//   return localDate
-// }
+const convertUTCToLocalDate = (date) => {
+  const localDate = moment(date).local()
+  return localDate
+}
 
 const formatHour = (date) => {
   // let _date = convertUTCToLocalDate(date)
@@ -41,5 +41,7 @@ module.exports = {
 
   humanizeDateTime: date => `${formatDate(date)} às ${formatHour(date)}`,
 
-  getUTCDate
+  getUTCDate,
+
+  convertUTCToLocalDate
 }

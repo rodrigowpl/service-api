@@ -1,6 +1,6 @@
 const { User, GasStation, Company } = require('../models')
 
-const { formatHour } = require('../../helpers/date')
+const { formatHour, convertUTCToLocalDate } = require('../../helpers/date')
 const { ACTIVED, DEACTIVED } = require('../../helpers/constants')
 
 const ConfigurationController = require('../configurations/controller')
@@ -84,7 +84,11 @@ module.exports = {
       where: { id: gasStationId }
     })
 
-    const gasStationUpdated = await gasStation.update(req.body)
+    const gasStationUpdated = await gasStation.update({
+      ...req.body,
+      horarioAtendimentoInicio: convertUTCToLocalDate(req.body.horarioAtendimentoInicio),
+      horarioAtendimentoFim: convertUTCToLocalDate(req.body.horarioAtendimentoFim)
+    })
 
     res.send(normalizeResponse(gasStationUpdated))
   },
