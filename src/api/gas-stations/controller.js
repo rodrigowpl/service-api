@@ -1,14 +1,14 @@
 const { User, GasStation, Company } = require('../models')
 
-const { formatHour, convertUTCToLocalDate } = require('../../helpers/date')
+const { formatHour } = require('../../helpers/date')
 const { ACTIVED, DEACTIVED } = require('../../helpers/constants')
 
 const ConfigurationController = require('../configurations/controller')
 
 const normalizeResponse = (gasStation) => (
   Object.assign(gasStation.toJSON(), {
-    horarioAtendimentoInicio: formatHour(gasStation.horarioAtendimentoInicio, true),
-    horarioAtendimentoFim: formatHour(gasStation.horarioAtendimentoFim, true),
+    horarioAtendimentoInicio: formatHour(gasStation.horarioAtendimentoInicio),
+    horarioAtendimentoFim: formatHour(gasStation.horarioAtendimentoFim),
     geoloc: {
       latitude: gasStation.latitude,
       longitude: gasStation.longitude
@@ -86,8 +86,8 @@ module.exports = {
 
     const gasStationUpdated = await gasStation.update({
       ...req.body,
-      horarioAtendimentoInicio: convertUTCToLocalDate(req.body.horarioAtendimentoInicio),
-      horarioAtendimentoFim: convertUTCToLocalDate(req.body.horarioAtendimentoFim)
+      // horarioAtendimentoInicio: convertUTCToLocalDate(req.body.horarioAtendimentoInicio),
+      // horarioAtendimentoFim: convertUTCToLocalDate(req.body.horarioAtendimentoFim)
     })
 
     res.send(normalizeResponse(gasStationUpdated))
