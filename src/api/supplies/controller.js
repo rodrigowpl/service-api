@@ -99,33 +99,46 @@ module.exports = {
       return
     }
 
-    const supplyValue = numeral(valor).divide(100).value()
-    const totalLiters = supplyValue / configuration.valorVenda
-    const totalCredits = supplyValue * configuration.desconto
+    try {
+      const supplyValue = numeral(valor).divide(100).value()
+      const totalLiters = supplyValue / configuration.valorVenda
+      const totalCredits = supplyValue * configuration.desconto
 
-    const supply = await Supply.create({
-      codigo: generatePinCode(8),
-      userId: user.id,
-      gasStationId: idPosto,
-      valor,
-      combustivel,
-      km,
-      placa,
-      token,
-      totalLitros: totalLiters,
-      totalCreditos: totalCredits,
-      usuario: user.nome,
-      posto: gasStation.nome,
-      bandeira: gasStation.bandeira,
-      endereco: gasStation.endereco,
-    })
+      console.log('supplyValue', supplyValue)
+      console.log('totalLiters', totalLiters)
+      console.log('totalCredits', totalCredits)
 
-    const response = {
-      token,
-      status: supply.status
+      const supply = await Supply.create({
+        codigo: generatePinCode(8),
+        userId: user.id,
+        gasStationId: idPosto,
+        valor,
+        combustivel,
+        km,
+        placa,
+        token,
+        totalLitros: totalLiters,
+        totalCreditos: totalCredits,
+        usuario: user.nome,
+        posto: gasStation.nome,
+        bandeira: gasStation.bandeira,
+        endereco: gasStation.endereco,
+      })
+
+      const response = {
+        token,
+        status: supply.status
+      }
+
+      res.send(response)
+    } catch (err) {
+      console.log('Erro:', err.message)
+
+      res.status(500).send({
+        code: 500,
+        result: 'Ocorreu um erro ao tentar abastecer, por favor tente novamente mais tarde.'
+      })
     }
-
-    res.send(response)
   },
 
   performSupply: async (req, res) => {
