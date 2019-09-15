@@ -102,7 +102,7 @@ module.exports = {
     try {
       const supplyValue = numeral(valor).divide(100).value()
       const totalLiters = supplyValue / configuration.valorVenda
-      const totalCredits = supplyValue * configuration.desconto
+      const totalCredits = numeral(supplyValue * configuration.desconto).multiply(100).value()
 
       console.log('supplyValue', supplyValue)
       console.log('totalLiters', totalLiters)
