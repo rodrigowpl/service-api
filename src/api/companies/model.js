@@ -44,7 +44,7 @@ module.exports = sequelize => (
       type: DataTypes.DATE
     },
     totalGastoDia: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.DOUBLE,
       defaultValue: 0
     },
     ativado: {
