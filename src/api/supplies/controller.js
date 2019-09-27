@@ -144,6 +144,9 @@ module.exports = {
   performSupply: async (req, res) => {
     const { idAbastecimento, token } = req.body
 
+    console.log('Peforming supply')
+    console.log('idAbastacimento:', idAbastecimento)
+
     const supply = await Supply.findOne({
       where: { id: idAbastecimento },
       include: [User]
@@ -169,9 +172,13 @@ module.exports = {
       where: { id: supply.user.id }
     })
 
+    console.log('idUser:', user.id)
+
     const company = await Company.findOne({
       where: { id: user.companyId }
     })
+
+    console.log('idEmpresa:', company.id)
 
     const configuration = await ConfigurationController.getConfiguration({
       fuelType: supply.combustivel,
@@ -179,7 +186,12 @@ module.exports = {
       gasStationId: supply.gasStationId
     })
 
+    console.log('idPosto:', supply.gasStationId)
+    console.log('valor venda:', configuration.valorVenda)
+    console.log('taxa gasola:', configuration.taxaGasola)
+
     if (!configuration) {
+      console.log('ERRO SEM CONFIG')
       res.status(422).send({
         code: 422,
         result: 'Nenhuma configuraçào cadastrada para a empresa do motorista, posto ou tipo do combustível.'
@@ -189,6 +201,9 @@ module.exports = {
 
     const valueDiscounted = calcPercentage(supply.valor, configuration.taxaGasola)
     const taxedValue = supply.valor - valueDiscounted
+
+    console.log('valor discontado:', valueDiscounted)
+    console.log('valor taxado:', taxedValue)
 
     const today = new Date()
     await supply.update({
@@ -200,7 +215,12 @@ module.exports = {
       valorTaxado: taxedValue
     })
 
+    console.log('créditos gerados:', supply.totalCreditos)
+    console.log('valor abastecimento:', supply.valor)
+
     const supplyPrice = supply.valor - supply.totalCreditos
+
+    console.log('preço abastecido', supplyPrice)
 
     if (company.tipoConta === ACCOUNT_TYPE.PRE) {
       await company.update({
