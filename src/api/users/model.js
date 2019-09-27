@@ -40,7 +40,7 @@ module.exports = sequelize => (
       defaultValue: ACTIVED
     },
     saldo: {
-      type: DataTypes.INTEGER
+      type: DataTypes.DOUBLE
     },
     limiteGastoDiario: {
       type: DataTypes.INTEGER,
