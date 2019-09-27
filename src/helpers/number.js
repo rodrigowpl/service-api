@@ -24,7 +24,7 @@ module.exports = {
   },
 
   formatMiles: (value) => {
-    return numeral(value).format('0,0')
+    return value
   },
 
   formatCurrency
