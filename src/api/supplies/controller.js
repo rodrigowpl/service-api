@@ -191,7 +191,6 @@ module.exports = {
     console.log('taxa gasola:', configuration.taxaGasola)
 
     if (!configuration) {
-      console.log('ERRO SEM CONFIG')
       res.status(422).send({
         code: 422,
         result: 'Nenhuma configuraçào cadastrada para a empresa do motorista, posto ou tipo do combustível.'
@@ -222,50 +221,59 @@ module.exports = {
 
     console.log('preço abastecido', supplyPrice)
 
-    if (company.tipoConta === ACCOUNT_TYPE.PRE) {
-      await company.update({
-        saldo: company.saldo - supplyPrice
-      })
-    }
+    try {
+      if (company.tipoConta === ACCOUNT_TYPE.PRE) {
+        await company.update({
+          saldo: company.saldo - supplyPrice
+        })
+      }
 
-    if (user.saldo) {
-      await user.update({
-        saldo: user.saldo - supplyPrice,
-      })
-    }
+      if (user.saldo) {
+        await user.update({
+          saldo: user.saldo - supplyPrice,
+        })
+      }
 
-    if (isToday(company.dataUltimoAbastecimento)) {
-      await company.update({
-        totalGastoDia: company.totalGastoDia + supplyPrice,
-        dataUltimoAbastecimento: today
-      })
-    } else {
-      await company.update({
-        totalGastoDia: supplyPrice,
-        dataUltimoAbastecimento: today
-      })
-    }
+      if (isToday(company.dataUltimoAbastecimento)) {
+        await company.update({
+          totalGastoDia: company.totalGastoDia + supplyPrice,
+          dataUltimoAbastecimento: today
+        })
+      } else {
+        await company.update({
+          totalGastoDia: supplyPrice,
+          dataUltimoAbastecimento: today
+        })
+      }
 
-    if (isToday(user.dataUltimoAbastecimento)) {
-      await user.update({
-        totalGastoDia: user.totalGastoDia + supplyPrice,
-        dataUltimoAbastecimento: today
-      })
-    } else {
-      await user.update({
-        totalGastoDia: supplyPrice,
-        dataUltimoAbastecimento: today
-      })
-    }
+      if (isToday(user.dataUltimoAbastecimento)) {
+        await user.update({
+          totalGastoDia: user.totalGastoDia + supplyPrice,
+          dataUltimoAbastecimento: today
+        })
+      } else {
+        await user.update({
+          totalGastoDia: supplyPrice,
+          dataUltimoAbastecimento: today
+        })
+      }
 
-    if (isSameMonth(user.dataUltimoAbastecimento)) {
-      await user.update({
-        totalGastoMes: user.totalGastoMes + supplyPrice
+      if (isSameMonth(user.dataUltimoAbastecimento)) {
+        await user.update({
+          totalGastoMes: user.totalGastoMes + supplyPrice
+        })
+      } else {
+        await user.update({
+          totalGastoMes: supplyPrice
+        })
+      }
+    } catch (err) {
+      console.log(err.message)
+      res.status(422).send({
+        code: 422,
+        result: 'Houve um erro ao tentar confirmar o abastecimento, por favor tente novamente.'
       })
-    } else {
-      await user.update({
-        totalGastoMes: supplyPrice
-      })
+      return
     }
 
     res.send('Abastecimento efetuado com sucesso.')
