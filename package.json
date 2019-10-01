@@ -6,7 +6,6 @@
   "scripts": {
     "start": "node src/index",
     "dev": "nodemon src/index",
-    "deploy": "git push heroku master",
     "lint": "eslint src/**",
     "lint:fix": "eslint src/** --fix",
     "test": "jest",
