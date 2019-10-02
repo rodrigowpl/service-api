@@ -63,8 +63,8 @@ module.exports = {
           diesel: dieselConfiguration.valorVenda,
           etanol: etanolConfiguration.valorVenda,
           ganhoGasolina: gasolineConfiguration.desconto,
-          ganhoDiesel: etanolConfiguration.desconto,
-          ganhoEtanol: dieselConfiguration.desconto
+          ganhoDiesel: dieselConfiguration.desconto,
+          ganhoEtanol: etanolConfiguration.desconto
         })
       })
     )
