@@ -1,5 +1,5 @@
 {
-  "name": "gasola-api",
+  "name": "service-api",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",

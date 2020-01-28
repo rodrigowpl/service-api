@@ -1,4 +1,4 @@
-## Gasola API
+## Service API
 
 ### Setup
 - Clone this repo
